@@ -12,6 +12,12 @@ const milestones = [
     title: "EVD Technology LLP",
     description: "Worked as a Frontend Developer, contributing to web application development and user interface enhancements. Collaborated with a small, passionate team of 5 members to build scalable solutions and deliver high-quality, responsive designs that aligned with business goals."
   },
+  {
+    year: "10/05/2025-05/07/2025",
+    title: "Dheera Digital",
+    description: "Worked as a Freelance Frontend Developer, building and maintaining web pages using Next.js. Integrated APIs, created dynamic pages, added smooth animations, and ensured full responsiveness across devices to deliver a polished and user-friendly website."
+  },
+
   // {
   //   year: "2014",
   //   title: "First Major Client",
@@ -29,40 +35,40 @@ const milestones = [
   // }
 ];
 export default function Experience() {
-    const theme = useTheme();
-  
+  const theme = useTheme();
+
   return (
     <Container>
       <motion.div variants={textVariant(0.1)}>
-       <Box sx={{ textAlign: "center", mt: 6 }}>
-         <Typography
-          variant="h3"
-          gutterBottom
-          sx={{
-            mb: 8,
-            fontWeight: 700,
-            background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            color: 'transparent',
-            position: 'relative',
-            display: 'inline-block',
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              bottom: -8,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '60%',
-              height: 4,
+        <Box sx={{ textAlign: "center", mt: 6 }}>
+          <Typography
+            variant="h3"
+            gutterBottom
+            sx={{
+              mb: 8,
+              fontWeight: 700,
               background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-              borderRadius: 2,
-            },
-          }}
-        >
-          My Experience
-        </Typography>
-       </Box>
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+              position: 'relative',
+              display: 'inline-block',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: -8,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '60%',
+                height: 4,
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                borderRadius: 2,
+              },
+            }}
+          >
+            My Experience
+          </Typography>
+        </Box>
       </motion.div>
       <Box sx={{ position: "relative" }}>
         <Divider
