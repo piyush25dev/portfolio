@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Box,
   Container,
@@ -30,7 +30,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1, // Delay between each child animation
+      staggerChildren: 0.1,
     },
   },
 };
@@ -56,8 +56,8 @@ const itemVariants = {
 const Skills: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery('(max-width:768px)');
-    const theme = useTheme();
-
+  const theme = useTheme();
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
     <Box
@@ -65,42 +65,41 @@ const Skills: React.FC = () => {
       id="skills"
       sx={{
         py: { xs: 2, md: 10 },
-        // backgroundColor: theme.palette.background.default,
       }}
     >
       <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
-       <Box sx={{display: 'flex', justifyContent: 'center' }}>
-         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6 }}
-        >
-          <Typography variant="h2" component="h2" align="center" sx={{
-            mb: 6,
-            fontWeight: 700,
-            background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            color: 'transparent',
-            position: 'relative',
-            display: 'inline-block',
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              bottom: -8,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '60%',
-              height: 4,
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <Typography variant="h2" component="h2" align="center" sx={{
+              mb: 6,
+              fontWeight: 700,
               background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-              borderRadius: 2,
-            },
-          }}>
-            My Skills
-          </Typography>
-        </motion.div>
-       </Box>
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+              position: 'relative',
+              display: 'inline-block',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: -8,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '60%',
+                height: 4,
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                borderRadius: 2,
+              },
+            }}>
+              My Skills
+            </Typography>
+          </motion.div>
+        </Box>
 
         <motion.div
           variants={containerVariants}
@@ -122,6 +121,8 @@ const Skills: React.FC = () => {
                     },
                   }}
                   custom={index}
+                  onHoverStart={() => setHoveredIndex(index)}
+                  onHoverEnd={() => setHoveredIndex(null)}
                 >
                   <Box
                     sx={{
@@ -151,8 +152,15 @@ const Skills: React.FC = () => {
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
                       <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ type: "spring", stiffness: 300 }}
+                        animate={{
+                          scale: hoveredIndex === index ? 1.15 : 1,
+                        }}
+                        transition={{
+                          delay: hoveredIndex === index ? 0.05 : 0,
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 20,
+                        }}
                       >
                         <Box
                           className="skill-icon"
@@ -163,7 +171,7 @@ const Skills: React.FC = () => {
                             width: isMobile ? 60 : 80,
                             height: isMobile ? 60 : 80,
                             objectFit: 'contain',
-                            transition: 'all 0.3s ease',
+                            transition: 'all 0.2s ease',
                           }}
                         />
                       </motion.div>

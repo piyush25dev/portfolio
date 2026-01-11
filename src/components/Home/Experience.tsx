@@ -6,6 +6,7 @@ import {
   fadeIn,
   textVariant,
 } from "../../utils/motion";
+
 const milestones = [
   {
     year: "04/03/2024-05/04/2025",
@@ -17,23 +18,8 @@ const milestones = [
     title: "Dheera Digital",
     description: "Worked as a Freelance Frontend Developer, building and maintaining web pages using Next.js. Integrated APIs, created dynamic pages, added smooth animations, and ensured full responsiveness across devices to deliver a polished and user-friendly website."
   },
-
-  // {
-  //   year: "2014",
-  //   title: "First Major Client",
-  //   description: "Landed our first Fortune 500 client, marking our entry into enterprise solutions."
-  // },
-  // {
-  //   year: "2018",
-  //   title: "International Expansion",
-  //   description: "Opened our first overseas office in London, beginning global operations."
-  // },
-  // {
-  //   year: "2022",
-  //   title: "Team Growth",
-  //   description: "Reached 200 employees worldwide with offices in 3 continents."
-  // }
 ];
+
 export default function Experience() {
   const theme = useTheme();
 
@@ -106,7 +92,6 @@ export default function Experience() {
                       xs: "flex-start",
                       md: index % 2 === 0 ? "flex-end" : "flex-start",
                     },
-                    // mb: 4,
                     px: 2,
                   }}
                 >
@@ -115,8 +100,6 @@ export default function Experience() {
                       width: { xs: "100%", md: "45%" },
                       p: 3,
                       borderRadius: 2,
-                      // boxShadow: 2,
-                      // background: "rgba(54, 54, 54, 0.91)",
                       background:
                         "transparent linear-gradient(180deg, rgba(0, 238, 255, 0.44) 0%, rgba(0, 238, 255, 0.05) 100%)",
                       boxShadow: "0 0 15px rgba(46, 210, 210, 0.56)",
@@ -151,24 +134,53 @@ export default function Experience() {
                       transition: "transform 0.3s, box-shadow 0.3s",
                       "&:hover": {
                         transform: "translateY(-5px)",
-                        // boxShadow: 4,
                         boxShadow: "0 0 15px rgba(6, 254, 254, 0.81)",
+                        backdropFilter: 'blur(8px)',
+                        "& .milestone-year": {
+                          fontWeight: 700,
+                        },
+                        "& .milestone-title": {
+                          fontWeight: 900,
+                        },
+                        "& .milestone-description": {
+                          fontWeight: 600,
+                        },
+                        scale: 1.02,
                       },
                     }}
                   >
                     <Typography
                       variant="body1"
-                      sx={{ fontWeight: 600, color: "#3fffff" }}
+                      className="milestone-year"
+                      sx={{ 
+                        fontWeight: 600, 
+                        color: "#3fffff",
+                        transition: "font-weight 0.3s",
+                      }}
                     >
                       {milestone.year}
                     </Typography>
                     <Typography
                       variant="h6"
-                      sx={{ fontWeight: 700, mb: 1, color: "#3fffff" }}
+                      className="milestone-title"
+                      sx={{ 
+                        fontWeight: 700, 
+                        mb: 1, 
+                        color: "#3fffff",
+                        transition: "font-weight 0.3s",
+                      }}
                     >
                       {milestone.title}
                     </Typography>
-                    <Typography variant="body1" sx={{ color: "#3fffff" }}>
+                    <Typography 
+                      variant="body1" 
+                      className="milestone-description"
+                      sx={{ 
+                        color: "#3fffff",
+                        fontWeight: 400,
+                        transition: "font-weight 0.3s",
+                      }}
+                    >
                       {milestone.description}
                     </Typography>
                   </Box>
