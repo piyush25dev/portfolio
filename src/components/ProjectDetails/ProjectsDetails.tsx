@@ -20,6 +20,8 @@ import { ProjectHeader } from './ProjectHeader';
 import { ProjectImage } from './ProjectImage';
 import { FeaturesSection } from './FeaturesSection';
 import { ChallengesSection } from './ChallengesSection';
+import { useHydrated } from '@/hooks/useHydrated';
+import FloatingParticles from './FloatingParticles';
 
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
@@ -32,6 +34,8 @@ const ProjectDetails: React.FC = () => {
   const params = useParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const hydrated = useHydrated();
+
 
   // Refs for scroll animations
   const containerRef = useRef<HTMLDivElement>(null);
@@ -185,34 +189,23 @@ const ProjectDetails: React.FC = () => {
           overflow: 'hidden',
         }}
       >
-        {[...Array(isMobile ? 10 : 20)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
+        {hydrated && (
+          <Box
+            sx={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 0,
+              overflow: 'hidden',
             }}
-            animate={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
-            transition={{
-              duration: 20 + Math.random() * 20,
-              repeat: Infinity,
-              repeatType: 'reverse',
-              ease: 'linear',
-            }}
-            style={{
-              position: 'absolute',
-              width: Math.random() * 4 + 2 + 'px',
-              height: Math.random() * 4 + 2 + 'px',
-              borderRadius: '50%',
-              background: i % 2 === 0 ? accentColor : '#39fcfcff',
-              opacity: Math.random() * 0.5 + 0.1,
-              filter: 'blur(1px)',
-            }}
-          />
-        ))}
+          >
+            <FloatingParticles
+              count={isMobile ? 10 : 20}
+              colorA={accentColor}
+              colorB="#39fcfcff"
+            />
+          </Box>
+        )}
+
       </Box>
 
       <MotionBox
@@ -242,7 +235,7 @@ const ProjectDetails: React.FC = () => {
 
             {/* Project Header Info */}
             <Grid size={{ xs: 12, md: 6 }} ref={headerRef}>
-               <ProjectHeader
+              <ProjectHeader
                 title={project.title}
                 technologies={project.technologies}
                 description={project.detailedDescription || project.description}
