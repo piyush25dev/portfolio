@@ -1,29 +1,11 @@
 "use client";
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Box, Container, Typography, IconButton, Link } from '@mui/material';
-import { gsap } from 'gsap';
 import { GitHub, LinkedIn, Email } from '@mui/icons-material';
 
 const Footer: React.FC = () => {
-  const footerRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (footerRef.current) {
-      gsap.from(footerRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 1,
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: 'top 90%',
-        },
-      });
-    }
-  }, []);
-
   return (
     <Box 
-      ref={footerRef}
       component="footer"
       sx={{ 
         py: 6,
