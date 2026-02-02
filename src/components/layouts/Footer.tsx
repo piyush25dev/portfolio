@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
             <LinkedIn fontSize="large" />
           </IconButton>
           <IconButton 
-            href="mailto:piyushkdbittu@gmail.com" 
+            href="mailto:piyushdewangan2501@gmail.com" 
             color="inherit"
             sx={{ mx: 1 }}
           >

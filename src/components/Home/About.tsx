@@ -255,7 +255,7 @@ const About: React.FC = () => {
                   }}
                 >
                   <Avatar
-                    src="/images/Photo.jpg"
+                    src="/images/Photo.jpeg"
                     alt="Profile Image"
                     sx={{
                       width: '100%',
