@@ -3,6 +3,7 @@ import { Box, Container, Typography } from '@mui/material';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import CustomButton from '../ui/CustomButton';
+import { scroller } from 'react-scroll'; // Import scroller
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,14 +40,30 @@ const Hero: React.FC = () => {
                 },
             });
 
-
             return () => {
-                // Clean up GSAP animations
                 ScrollTrigger.getAll().forEach(trigger => trigger.kill());
                 gsap.killTweensOf('*');
             };
         }
     }, [mounted]);
+
+    const scrollToContact = () => {
+        scroller.scrollTo('contact', {
+            duration: 800,
+            delay: 0,
+            smooth: 'easeInOutQuart',
+            offset: -64, // Adjust based on your navbar height
+        });
+    };
+
+    const scrollToProjects = () => {
+        scroller.scrollTo('projects', {
+            duration: 800,
+            delay: 0,
+            smooth: 'easeInOutQuart',
+            offset: -64,
+        });
+    };
 
     return (
         <Box
@@ -57,101 +74,8 @@ const Hero: React.FC = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: 'white',
-                // position: 'relative',
-                // overflow: 'hidden',
-                // background: `
-                //     linear-gradient(
-                //         135deg,
-                //         ${theme.palette.primary.main} 0%,
-                //         ${theme.palette.secondary.main} 25%,
-                //         ${theme.palette.primary.dark} 50%,
-                //         ${theme.palette.secondary.dark} 75%,
-                //         ${theme.palette.primary.main} 100%
-                //     )`,
-                // backgroundSize: '400% 400%',
-                // animation: 'gradientWave 12s ease infinite',
-                // '@keyframes gradientWave': {
-                //     '0%': {
-                //         backgroundPosition: '0% 50%',
-                //     },
-                //     '50%': {
-                //         backgroundPosition: '100% 50%',
-                //     },
-                //     '100%': {
-                //         backgroundPosition: '0% 50%',
-                //     },
-                // },
-                // '&::before': {
-                //     content: '""',
-                //     position: 'absolute',
-                //     top: 0,
-                //     left: 0,
-                //     right: 0,
-                //     bottom: 0,
-                //     background: `
-                //         radial-gradient(
-                //             circle at 75% 30%,
-                //             rgba(255, 255, 255, 0.1) 0%,
-                //             transparent 50%
-                //         )`,
-                //     animation: 'pulse 8s ease infinite alternate',
-                //     '@keyframes pulse': {
-                //         '0%': {
-                //             transform: 'scale(1)',
-                //             opacity: 0.5,
-                //         },
-                //         '100%': {
-                //             transform: 'scale(1.2)',
-                //             opacity: 0.2,
-                //         },
-                //     },
-                // },
             }}
         >
-            {/* <ul className="background">
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-   <li></li>
-</ul> */}
-
-
             <Container maxWidth="lg">
                 <Box ref={textRef} sx={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
                     <Typography variant="h1"
@@ -169,9 +93,8 @@ const Hero: React.FC = () => {
                             variant="contained"
                             color="primary"
                             size="large"
-                            href="#contact"
+                            onClick={scrollToContact} // Use onClick instead of href
                             sx={{
-                                // color: 'white',
                                 boxShadow: '0 4px 14px rgba(0, 0, 0, 0.2)',
                                 '&:hover': {
                                     transform: 'translateY(-2px)',
@@ -187,7 +110,7 @@ const Hero: React.FC = () => {
                             variant="outlined"
                             color="inherit"
                             size="large"
-                            href="#projects"
+                            onClick={scrollToProjects} // Use onClick instead of href
                             sx={{
                                 boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)',
                                 '&:hover': {
