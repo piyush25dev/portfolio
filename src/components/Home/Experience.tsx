@@ -93,6 +93,7 @@ export default function Experience() {
                       md: index % 2 === 0 ? "flex-end" : "flex-start",
                     },
                     px: 2,
+                    mb: 2,
                   }}
                 >
                   <Box
