@@ -223,7 +223,7 @@ const ProjectDetails: React.FC = () => {
         <Container maxWidth="lg">
           <Grid container spacing={isMobile ? 3 : 5}>
             {/* Project Image */}
-            <Grid size={{ xs: 12, md: 6 }} ref={imageRef}>
+            <Grid size={{ xs: 12 }} ref={imageRef}>
               <ProjectImage
                 image={project.image}
                 title={project.title}
@@ -234,7 +234,7 @@ const ProjectDetails: React.FC = () => {
             </Grid>
 
             {/* Project Header Info */}
-            <Grid size={{ xs: 12, md: 6 }} ref={headerRef}>
+            <Grid size={{ xs: 12 }} ref={headerRef}>
               <ProjectHeader
                 title={project.title}
                 technologies={project.technologies}
