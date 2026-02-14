@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        // style={{ position: "relative" }}
+        style={{ position: "relative" }}
       >
         <ParticleBackground />
         <ThemeProvider theme={theme}>
