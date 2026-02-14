@@ -14,14 +14,19 @@ import { projects } from '@/data/projects';
 import Head from 'next/head';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
+import dynamic from 'next/dynamic';
 
 // Import separated components
 import { ProjectHeader } from './ProjectHeader';
 import { ProjectImage } from './ProjectImage';
 import { FeaturesSection } from './FeaturesSection';
 import { ChallengesSection } from './ChallengesSection';
-import { useHydrated } from '@/hooks/useHydrated';
-import FloatingParticles from './FloatingParticles';
+
+
+const FloatingParticles = dynamic(
+  () => import('./FloatingParticles'),
+  { ssr: false }
+);
 
 // Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
@@ -34,7 +39,6 @@ const ProjectDetails: React.FC = () => {
   const params = useParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const hydrated = useHydrated();
 
 
   // Refs for scroll animations
@@ -189,22 +193,12 @@ const ProjectDetails: React.FC = () => {
           overflow: 'hidden',
         }}
       >
-        {hydrated && (
-          <Box
-            sx={{
-              position: 'fixed',
-              inset: 0,
-              zIndex: 0,
-              overflow: 'hidden',
-            }}
-          >
-            <FloatingParticles
-              count={isMobile ? 10 : 20}
-              colorA={accentColor}
-              colorB="#39fcfcff"
-            />
-          </Box>
-        )}
+        <FloatingParticles
+          count={isMobile ? 10 : 20}
+          colorA={accentColor}
+          colorB="#39fcfcff"
+        />
+
 
       </Box>
 
@@ -223,7 +217,7 @@ const ProjectDetails: React.FC = () => {
         <Container maxWidth="lg">
           <Grid container spacing={isMobile ? 3 : 5}>
             {/* Project Image */}
-            <Grid size={{ xs: 12 }} ref={imageRef}>
+            <Grid size={{ xs: 12, md: 6 }} ref={imageRef}>
               <ProjectImage
                 image={project.image}
                 title={project.title}
@@ -234,7 +228,7 @@ const ProjectDetails: React.FC = () => {
             </Grid>
 
             {/* Project Header Info */}
-            <Grid size={{ xs: 12 }} ref={headerRef}>
+            <Grid size={{ xs: 12, md: 6 }} ref={headerRef}>
               <ProjectHeader
                 title={project.title}
                 technologies={project.technologies}
