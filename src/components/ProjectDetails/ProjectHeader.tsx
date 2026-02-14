@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Button, Typography, Chip, useTheme, useMediaQuery } from '@mui/material';
 import { motion } from 'framer-motion';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -20,6 +20,40 @@ interface ProjectHeaderProps {
   isInView: boolean;
 }
 
+// Utility function to generate stable positions based on a seed
+function generateStablePositions(count: number, seed: string) {
+  const positions = [];
+  
+  // Create a simple hash from the seed string
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+    hash |= 0; // Convert to 32-bit integer
+  }
+  
+  // Use the hash to seed a simple pseudo-random number generator
+  const seededRandom = (n: number) => {
+    const x = Math.sin(hash + n) * 10000;
+    return x - Math.floor(x);
+  };
+  
+  for (let i = 0; i < count; i++) {
+    const baseSeed = i * 100;
+    positions.push({
+      // Initial position
+      initialX: seededRandom(baseSeed) * 100,
+      initialY: seededRandom(baseSeed + 1) * 100,
+      // Animation keyframes
+      animX1: seededRandom(baseSeed + 2) * 100,
+      animY1: seededRandom(baseSeed + 3) * 100,
+      animX2: seededRandom(baseSeed + 4) * 100,
+      animY2: seededRandom(baseSeed + 5) * 100,
+    });
+  }
+  
+  return positions;
+}
+
 export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   title,
   technologies,
@@ -31,6 +65,13 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Generate stable positions once using useMemo
+  // This ensures the same values are used on server and client
+  const stablePositions = useMemo(
+    () => generateStablePositions(6, title + accentColor + 'portfolio-animation'),
+    [title, accentColor]
+  );
 
   return (
     <MotionBox
@@ -51,7 +92,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           : "0 15px 40px rgba(9, 240, 248, 0.3)",
       }}
     >
-      {/* Animated background particles */}
+      {/* Animated background particles - NOW WITH STABLE POSITIONS */}
       <Box
         sx={{
           position: 'absolute',
@@ -63,18 +104,22 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           overflow: 'hidden',
         }}
       >
-        {[...Array(6)].map((_, i) => (
+        {stablePositions.map((pos, i) => (
           <motion.div
             key={i}
-            initial={{ x: Math.random() * 100 + '%', y: Math.random() * 100 + '%' }}
+            initial={{ 
+              x: pos.initialX + '%', 
+              y: pos.initialY + '%' 
+            }}
             animate={{
-              x: [Math.random() * 100 + '%', Math.random() * 100 + '%', Math.random() * 100 + '%'],
-              y: [Math.random() * 100 + '%', Math.random() * 100 + '%', Math.random() * 100 + '%'],
+              x: [pos.initialX + '%', pos.animX1 + '%', pos.animX2 + '%'],
+              y: [pos.initialY + '%', pos.animY1 + '%', pos.animY2 + '%'],
             }}
             transition={{
               duration: 10 + i * 2,
               repeat: Infinity,
               ease: 'linear',
+              repeatType: 'mirror', // Makes the animation go back and forth smoothly
             }}
             style={{
               position: 'absolute',
@@ -83,6 +128,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
               borderRadius: '50%',
               background: `radial-gradient(circle, ${accentColor}40, transparent)`,
               filter: 'blur(20px)',
+              willChange: 'transform', // Performance optimization
             }}
           />
         ))}
@@ -95,7 +141,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         transition={{ duration: 0.5 }}
         sx={{ mb: 3, position: 'relative', zIndex: 2 }}
       >
-        <Link href="/#projects" passHref>
+        <Link href="/#projects" passHref >
           <Button
             startIcon={<ArrowBackIcon />}
             variant="outlined"
