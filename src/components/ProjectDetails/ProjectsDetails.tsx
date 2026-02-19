@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import {
   Container,
@@ -8,148 +8,271 @@ import {
   Grid,
   useTheme,
   useMediaQuery,
+  CircularProgress,
 } from '@mui/material';
-import { motion, useScroll, useSpring, useInView } from 'framer-motion';
 import { projects } from '@/data/projects';
 import Head from 'next/head';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import dynamic from 'next/dynamic';
+import { db } from "@/utils/firebase";
 
 // Import separated components
 import { ProjectHeader } from './ProjectHeader';
 import { ProjectImage } from './ProjectImage';
 import { FeaturesSection } from './FeaturesSection';
 import { ChallengesSection } from './ChallengesSection';
+import { collection, getDocs } from 'firebase/firestore';
 
+// TypeScript Interface
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  detailedDescription?: string;
+  technologies: string[];
+  image: string;
+  link: string;
+  github?: string;
+  demoUrl?: string;
+  features?: string[];
+  challenges?: string[];
+  solutions?: string[];
+}
+
+// Fallback projects
+const FALLBACK_PROJECTS: Project[] = [
+  {
+    id: '1',
+    title: 'Project 1',
+    description: 'A great project description goes here',
+    technologies: ['React', 'TypeScript'],
+    image: '/images/project1.png',
+    link: '#',
+  },
+];
 
 const FloatingParticles = dynamic(
   () => import('./FloatingParticles'),
   { ssr: false }
 );
 
-// Register ScrollTrigger plugin
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
+// ─── Scroll Animation Hook ──────────────────────────────────────────────────
+type AnimationVariant =
+  | 'fadeUp'
+  | 'fadeDown'
+  | 'fadeLeft'
+  | 'fadeRight'
+  | 'fadeIn'
+  | 'scaleIn'
+  | 'slideReveal';
+
+interface UseScrollAnimationOptions {
+  threshold?: number;
+  delay?: number;       // ms
+  duration?: number;    // ms
+  once?: boolean;
 }
 
-const MotionBox = motion(Box);
+function useScrollAnimation(
+  variant: AnimationVariant = 'fadeUp',
+  options: UseScrollAnimationOptions = {}
+) {
+  const { threshold = 0.15, delay = 0, duration = 700, once = false } = options;
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          if (once) observer.unobserve(el);
+        } else if (!once) {
+          setIsVisible(false);
+        }
+      },
+      { threshold }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold, once]);
+
+  // Map variant → hidden / visible CSS
+  const getStyles = (): { hidden: React.CSSProperties; visible: React.CSSProperties } => {
+    const base: React.CSSProperties = {
+      transition: `opacity ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform ${duration}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
+    };
+
+    const map: Record<AnimationVariant, { hidden: React.CSSProperties; visible: React.CSSProperties }> = {
+      fadeUp: {
+        hidden: { ...base, opacity: 0, transform: 'translateY(48px)' },
+        visible: { ...base, opacity: 1, transform: 'translateY(0px)' },
+      },
+      fadeDown: {
+        hidden: { ...base, opacity: 0, transform: 'translateY(-48px)' },
+        visible: { ...base, opacity: 1, transform: 'translateY(0px)' },
+      },
+      fadeLeft: {
+        hidden: { ...base, opacity: 0, transform: 'translateX(-56px)' },
+        visible: { ...base, opacity: 1, transform: 'translateX(0px)' },
+      },
+      fadeRight: {
+        hidden: { ...base, opacity: 0, transform: 'translateX(56px)' },
+        visible: { ...base, opacity: 1, transform: 'translateX(0px)' },
+      },
+      fadeIn: {
+        hidden: { ...base, opacity: 0 },
+        visible: { ...base, opacity: 1 },
+      },
+      scaleIn: {
+        hidden: { ...base, opacity: 0, transform: 'scale(0.85)' },
+        visible: { ...base, opacity: 1, transform: 'scale(1)' },
+      },
+      slideReveal: {
+        hidden: { ...base, opacity: 0, transform: 'translateY(32px) scaleX(0.96)' },
+        visible: { ...base, opacity: 1, transform: 'translateY(0px) scaleX(1)' },
+      },
+    };
+
+    return map[variant];
+  };
+
+  const styles = getStyles();
+
+  return {
+    ref,
+    style: isVisible ? styles.visible : styles.hidden,
+  };
+}
+
+// ─── Animated Wrapper Component ─────────────────────────────────────────────
+interface AnimatedBoxProps {
+  variant?: AnimationVariant;
+  delay?: number;
+  duration?: number;
+  threshold?: number;
+  children: React.ReactNode;
+  sx?: object;
+}
+
+const AnimatedBox: React.FC<AnimatedBoxProps> = ({
+  variant = 'fadeUp',
+  delay = 0,
+  duration = 700,
+  threshold = 0.12,
+  children,
+  sx = {},
+}) => {
+  const { ref, style } = useScrollAnimation(variant, { delay, duration, threshold });
+
+  return (
+    <Box ref={ref} style={style} sx={sx}>
+      {children}
+    </Box>
+  );
+};
+
+// ─── Divider with scale-in reveal ───────────────────────────────────────────
+const AnimatedDivider: React.FC<{ accentColor: string }> = ({ accentColor }) => {
+  const { ref, style } = useScrollAnimation('scaleIn', { duration: 900, threshold: 0.5 });
+
+  return (
+    <Box
+      ref={ref}
+      style={style}
+      sx={{
+        height: '2px',
+        background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)`,
+        margin: '40px 0',
+        transformOrigin: 'center',
+      }}
+    />
+  );
+};
+
+// ─── Main Component ──────────────────────────────────────────────────────────
 const ProjectDetails: React.FC = () => {
   const params = useParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [fetchedProjects, setFetchedProjects] = useState<Project[]>([]);
 
-  // Refs for scroll animations
-  const containerRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-
-  // Get the project
   const projectId = params?.id as string;
-  const project = projects.find(p => p.id === projectId);
+  const project = projects.find(p => p.id === projectId) || fetchedProjects.find(p => p.id === projectId);
 
-  // Scroll animations
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start", "end"]
-  });
-
-  const smoothScrollProgress = useSpring(scrollYProgress, {
-    stiffness: isMobile ? 50 : 100,
-    damping: isMobile ? 15 : 30,
-    restDelta: 0.001
-  });
-
-  // Check if elements are in view
-  const isHeaderInView = useInView(headerRef, { once: false, amount: 0.3 });
-  const isImageInView = useInView(imageRef, { once: false, amount: 0.3 });
-
-  // Setup smooth scrolling with Lenis
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let lenis: any = null;
-
-    const initLenis = () => {
-      if (window.Lenis) {
-        lenis = new window.Lenis({
-          duration: isMobile ? 0.8 : 1.2,
-          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          direction: 'vertical',
-          gestureDirection: 'vertical',
-          smooth: true,
-          mouseMultiplier: 1,
-          smoothTouch: isMobile ? true : false,
-          touchMultiplier: isMobile ? 1.5 : 2,
-        });
-
-        function raf(time: number) {
-          lenis.raf(time);
-          requestAnimationFrame(raf);
-        }
-
-        requestAnimationFrame(raf);
-      }
-    };
-
-    if (typeof window.Lenis === 'function') {
-      initLenis();
-    } else {
-      const checkLenisInterval = setInterval(() => {
-        if (typeof window.Lenis === 'function') {
-          initLenis();
-          clearInterval(checkLenisInterval);
-        }
-      }, 100);
-
-      setTimeout(() => clearInterval(checkLenisInterval), 5000);
-    }
-
-    return () => {
-      if (lenis) {
-        lenis.destroy();
-      }
-    };
-  }, [isMobile]);
-
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Project not found
+  const fetchProjects = useCallback(async () => {
+    try {
+      const snapshot = await getDocs(collection(db, "projects"));
+
+      if (snapshot.empty) {
+        setFetchedProjects(FALLBACK_PROJECTS);
+      } else {
+        const fetchedProjectsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          title: doc.data().title || '',
+          description: doc.data().description || '',
+          detailedDescription: doc.data().detailedDescription || '',
+          technologies: doc.data().technologies || [],
+          image: doc.data().image || '',
+          link: doc.data().link || '#',
+          github: doc.data().github || '',
+          demoUrl: doc.data().demoUrl || '',
+          features: doc.data().features || [],
+          challenges: doc.data().challenges || [],
+          solutions: doc.data().solutions || [],
+        }));
+        setFetchedProjects(fetchedProjectsData);
+      }
+    } catch (err) {
+      console.error('Error fetching projects:', err);
+      setFetchedProjects(FALLBACK_PROJECTS);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
   if (!project) {
     return (
       <Box sx={{
         height: '100vh',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: theme.palette.background.default
+        gap: 3,
+        backgroundColor: 'transparent'
       }}>
-        <Typography variant="h4">Project not found</Typography>
+        <CircularProgress
+          size={60}
+          thickness={4}
+          sx={{ color: theme.palette.primary.main }}
+        />
+        <Typography variant="h4" sx={{
+          color: theme.palette.text.primary,
+          fontWeight: 500
+        }}>
+          Loading project...
+        </Typography>
       </Box>
     );
   }
 
-  // Generate accent color
   const getAccentColor = () => {
     const colors = [
-      '#FFCDD2',
-      '#FFCC80',
-      '#FFF59D',
-      '#A5D6A7',
-      '#90CAF9',
-      '#CE93D8',
-      '#80DEEA',
-      '#BCAAA4',
+      '#FFCDD2', '#FFCC80', '#FFF59D', '#A5D6A7',
+      '#90CAF9', '#CE93D8', '#80DEEA', '#BCAAA4',
     ];
-    const hash = project.id.split('').reduce((acc, char) => {
-      return char.charCodeAt(0) + acc;
-    }, 0);
+    const hash = project.id.split('').reduce((acc, char) => char.charCodeAt(0) + acc, 0);
     return colors[hash % colors.length];
   };
 
@@ -198,15 +321,9 @@ const ProjectDetails: React.FC = () => {
           colorA={accentColor}
           colorB="#39fcfcff"
         />
-
-
       </Box>
 
-      <MotionBox
-        ref={containerRef}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+      <Box
         sx={{
           py: { xs: 4, sm: 6, md: 8 },
           minHeight: '100vh',
@@ -216,78 +333,69 @@ const ProjectDetails: React.FC = () => {
       >
         <Container maxWidth="lg">
           <Grid container spacing={isMobile ? 3 : 5}>
-            {/* Project Image */}
-            <Grid size={{ xs: 12, md: 6 }} ref={imageRef}>
-              <ProjectImage
-                image={project.image}
-                title={project.title}
-                accentColor={accentColor}
-                isInView={isImageInView}
-                scrollProgress={smoothScrollProgress}
-              />
+
+            {/* ── Project Image — slides in from the LEFT ── */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <AnimatedBox variant="fadeLeft" duration={800} delay={100}>
+                <ProjectImage
+                  image={project.image}
+                  title={project.title}
+                  accentColor={accentColor}
+                  isInView={true}
+                />
+              </AnimatedBox>
             </Grid>
 
-            {/* Project Header Info */}
-            <Grid size={{ xs: 12, md: 6 }} ref={headerRef}>
-              <ProjectHeader
-                title={project.title}
-                technologies={project.technologies}
-                description={project.detailedDescription || project.description}
-                github={project.github}
-                demoUrl={project.demoUrl}
-                accentColor={accentColor}
-                isInView={isHeaderInView}
-              />
+            {/* ── Project Header — slides in from the RIGHT ── */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <AnimatedBox variant="fadeRight" duration={800} delay={200}>
+                <ProjectHeader
+                  title={project.title}
+                  technologies={project.technologies}
+                  description={project.detailedDescription || project.description}
+                  github={project.github}
+                  demoUrl={project.demoUrl}
+                  accentColor={accentColor}
+                  isInView={true}
+                />
+              </AnimatedBox>
             </Grid>
 
-            {/* Divider */}
+            {/* ── Divider — scales in from center ── */}
             <Grid size={{ xs: 12 }}>
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: false, amount: 0.8 }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-                style={{
-                  height: '2px',
-                  background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)`,
-                  transformOrigin: 'center',
-                  margin: '40px 0',
-                }}
-              />
+              <AnimatedDivider accentColor={accentColor} />
             </Grid>
 
-            {/* Features Section */}
+            {/* ── Features — fades up ── */}
             {project.features && project.features.length > 0 && (
               <Grid size={{ xs: 12 }}>
-                <FeaturesSection
-                  features={project.features}
-                  accentColor={accentColor}
-                />
+                <AnimatedBox variant="fadeUp" duration={750} delay={0} threshold={0.08}>
+                  <FeaturesSection
+                    features={project.features}
+                    accentColor={accentColor}
+                  />
+                </AnimatedBox>
               </Grid>
             )}
 
-            {/* Challenges Section */}
+            {/* ── Challenges — slide-reveal from below ── */}
             {project.challenges && project.challenges.length > 0 && (
               <Grid size={{ xs: 12 }}>
-                <ChallengesSection
-                  challenges={project.challenges}
-                  solutions={project.solutions || []}
-                  accentColor={accentColor}
-                />
+                <AnimatedBox variant="slideReveal" duration={800} delay={100} threshold={0.08}>
+                  <ChallengesSection
+                    challenges={project.challenges}
+                    solutions={project.solutions || []}
+                    accentColor={accentColor}
+                  />
+                </AnimatedBox>
               </Grid>
             )}
+
           </Grid>
         </Container>
-      </MotionBox>
+      </Box>
     </>
   );
 };
-
-declare global {
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Lenis: any;
-  }
-}
 
 export default ProjectDetails;
