@@ -103,7 +103,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             transform: backAnim.inView ? 'translateX(0px)' : 'translateX(-36px)',
           }}
         >
-          <Link href="/#projects" passHref>
+          <Link href="/" passHref>
             <Button
               startIcon={<ArrowBackIcon />}
               variant="outlined"

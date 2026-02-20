@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Box, Typography, Chip, Card, CardMedia, CardContent, useTheme } from '@mui/material';
+import { Box, Typography, Chip, Card, CardMedia, CardContent, useTheme, useMediaQuery } from '@mui/material';
 import { SxProps, Theme } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
@@ -29,6 +29,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const theme = useTheme();
   const router = useRouter();
   const cardRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClick = (e: React.MouseEvent) => {
     if (!externalLink) {
@@ -38,7 +39,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
+    // Disable 3D effects on mobile
+    if (isMobile || !cardRef.current) return;
     
     const card = cardRef.current;
     const cardRect = card.getBoundingClientRect();
@@ -100,7 +102,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       sx={{
         textDecoration: 'none',
         display: 'block',
-        height: '100%'
+        height: '100%',
+        width: '100%',
       }}
     >
       <Card
@@ -109,7 +112,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          transition: isMobile ? 'none' : 'transform 0.3s ease, box-shadow 0.3s ease',
           background:
           "transparent linear-gradient(180deg, rgba(0, 238, 255, 0.67) 0%, rgba(0, 238, 255, 0.15) 100%)",
           backdropFilter: 'blur(8px)',
@@ -117,9 +120,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           boxShadow: theme.palette.mode === 'dark' 
             ? "0 8px 25px rgba(71, 242, 248, 0.3)" 
             : "0 8px 25px rgba(9, 240, 248, 0.43)",
-          borderRadius: 4,
+          borderRadius: { xs: 2, sm: 4 },
           cursor: 'pointer',
           transformStyle: 'preserve-3d',
+          overflow: 'hidden',
           ...sx,
         }}
         onMouseMove={handleMouseMove}
@@ -131,25 +135,62 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           image={image}
           alt={title}
           sx={{
-            height: 200,
+            height: { xs: 150, sm: 200 },
+            width: '100%',
             objectFit: 'cover',
             borderBottom: `4px solid ${accentColor || theme.palette.primary.main}`,
-            transform: 'translateZ(30px)', // Adds depth to the image
+            transform: isMobile ? 'none' : 'translateZ(30px)',
           }}
         />
-        <CardContent sx={{ flexGrow: 1, transform: 'translateZ(20px)' }}> {/* Adds depth to content */}
-          <Typography gutterBottom variant="h5" component="h3" sx={{ color: "#fff" }}>
+        <CardContent sx={{ 
+          flexGrow: 1, 
+          transform: isMobile ? 'none' : 'translateZ(20px)',
+          p: { xs: 1.5, sm: 2 },
+          overflow: 'hidden',
+        }}>
+          <Typography 
+            gutterBottom 
+            variant="h5" 
+            component="h3" 
+            sx={{ 
+              color: "#fff",
+              fontSize: { xs: '1.1rem', sm: '1.5rem' },
+              fontWeight: 700,
+              mb: { xs: 1, sm: 1.5 },
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
             {title}
           </Typography>
-          <Typography variant="body2" sx={{ mb: 2, color: "#fff" }}>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              mb: { xs: 1.5, sm: 2 }, 
+              color: "#fff",
+              fontSize: { xs: '0.85rem', sm: '0.875rem' },
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+            }}
+          >
             {description}
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, transform: 'translateZ(10px)' }}> {/* Adds depth to chips */}
-            {technologies.map((tech) => (
+          <Box sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: { xs: 0.5, sm: 1 },
+            transform: isMobile ? 'none' : 'translateZ(10px)',
+          }}>
+            {technologies.slice(0, 3).map((tech) => (
               <Chip
                 key={tech}
                 label={tech}
-                // size="small"
                 sx={{
                   backgroundColor: accentColor
                     ? `${accentColor}30`
@@ -160,9 +201,37 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
                     ? accentColor
                     : theme.palette.text.primary,
                   fontWeight: 900,
+                  fontSize: { xs: '0.65rem', sm: '0.75rem' },
+                  height: { xs: 24, sm: 32 },
+                  padding: { xs: '4px 8px', sm: '4px 12px' },
+                  '& .MuiChip-label': {
+                    px: { xs: 0.5, sm: 1 },
+                  }
                 }}
               />
             ))}
+            {technologies.length > 3 && (
+              <Chip
+                label={`+${technologies.length - 3}`}
+                sx={{
+                  backgroundColor: accentColor
+                    ? `${accentColor}30`
+                    : theme.palette.mode === 'dark'
+                      ? theme.palette.grey[800]
+                      : theme.palette.grey[200],
+                  color: accentColor
+                    ? accentColor
+                    : theme.palette.text.primary,
+                  fontWeight: 900,
+                  fontSize: { xs: '0.65rem', sm: '0.75rem' },
+                  height: { xs: 24, sm: 32 },
+                  padding: { xs: '4px 8px', sm: '4px 12px' },
+                  '& .MuiChip-label': {
+                    px: { xs: 0.5, sm: 1 },
+                  }
+                }}
+              />
+            )}
           </Box>
         </CardContent>
       </Card>

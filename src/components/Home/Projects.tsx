@@ -221,7 +221,7 @@ const AnimatedTitle: React.FC<{ primary: string; secondary: string }> = ({ prima
 // ── Animated card wrapper — alternating left/right pop ───────────────────────
 const AnimatedCard: React.FC<{ index: number; children: React.ReactNode }> = ({ index, children }) => {
   const { ref, inView } = useInView(0.08);
-  const delay = Math.min(index * 100, 300);
+  const delay = Math.min(index * 200, 300);
   const fromX = index % 2 === 0 ? -50 : 50; // even ← left, odd → right
 
   return (
@@ -234,8 +234,8 @@ const AnimatedCard: React.FC<{ index: number; children: React.ReactNode }> = ({ 
         ].join(', '),
         opacity:   inView ? 1 : 0,
         transform: inView
-          ? 'translateX(0px) translateY(0px) scale(1)'
-          : `translateX(${fromX}px) translateY(40px) scale(0.93)`,
+          ? 'translateY(0px) translateY(0px) scale(1)'
+          : `translateY(${fromX}px) translateY(40px) scale(0.93)`,
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -292,14 +292,16 @@ const Projects: React.FC = () => {
       if (snapshot.empty) {
         setProjects(FALLBACK_PROJECTS);
       } else {
-        setProjects(snapshot.docs.map((doc) => ({
+        const fetchedProjects = snapshot.docs.map((doc) => ({
           id: doc.id,
           title: doc.data().title || '',
           description: doc.data().description || '',
           technologies: doc.data().technologies || [],
           image: doc.data().image || '',
           link: doc.data().link || '#',
-        })));
+        }));
+        // Sort by ID in reverse order (newest first)
+        setProjects(fetchedProjects.sort((a, b) => b.id.localeCompare(a.id)));
       }
     } catch (err) {
       console.error('Error fetching projects:', err);
