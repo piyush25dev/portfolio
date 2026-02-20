@@ -1,10 +1,68 @@
-import React from 'react';
-import { Box, Container, Typography, Avatar, Grid, useTheme, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Container, Typography, Avatar, Grid, useTheme, Button, Skeleton, Alert } from '@mui/material';
 import { motion } from 'framer-motion';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/utils/firebase';
 import Experience from './Experience';
+
+interface AboutData {
+  name: string;
+  subtitle: string;
+  bio1: string;
+  bio2: string;
+  bio3: string;
+  imageUrl: string;
+  resumeUrl: string;
+}
 
 const About: React.FC = () => {
   const theme = useTheme();
+
+  // State management
+  const [aboutData, setAboutData] = useState<AboutData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch data from Firebase
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const snap = await getDocs(collection(db, 'about'));
+
+        if (!snap.empty) {
+          const data = snap.docs[0].data() as AboutData;
+          setAboutData(data);
+        } else {
+          setError('No about information found');
+        }
+      } catch (err) {
+        console.error('Error fetching about data:', err);
+        setError('Failed to load about information');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAboutData();
+  }, []);
+
+  // Helper function to render text with [brackets] highlighted in red
+  const renderHighlightedText = (text: string) => {
+    if (!text) return text;
+    const parts = text.split(/(\[[^\]]+\])/g);
+    return parts.map((part, idx) => {
+      if (part.startsWith('[') && part.endsWith(']')) {
+        return (
+          <span key={idx} style={{ color: '#ef4444' }}>
+            <strong>{part.slice(1, -1)}</strong>
+          </span>
+        );
+      }
+      return part;
+    });
+  };
 
   // Animation variants
   const containerVariants = {
@@ -177,7 +235,7 @@ const About: React.FC = () => {
               About Me
             </Typography>
           </motion.div>
-          
+
           <motion.div
             variants={itemVariants}
             initial="hidden"
@@ -197,6 +255,13 @@ const About: React.FC = () => {
           </motion.div>
         </Box>
 
+        {/* ── Error State ── */}
+        {error && !loading && (
+          <Alert severity="error" sx={{ mb: 4, borderRadius: 2 }}>
+            {error}
+          </Alert>
+        )}
+
         <Grid container spacing={6} alignItems="center">
           <Grid size={{ xs: 12, md: 5 }}>
             <motion.div
@@ -206,65 +271,69 @@ const About: React.FC = () => {
               viewport={{ once: false, amount: 0.3 }}
               style={{ display: 'flex', justifyContent: 'center' }}
             >
-              <motion.div
-                variants={avatarVariants}
-                initial="hidden"
-                whileInView="visible"
-                whileHover="hover"
-                viewport={{ once: false, amount: 0.3 }}
-                onMouseMove={handleMouseMove}
-                onMouseLeave={handleMouseLeave}
-                style={{
-                  width: 280,
-                  height: 280,
-                  borderRadius: '50%',
-                  position: 'relative',
-                  transformStyle: 'preserve-3d',
-                  boxShadow: '0 10px 30px rgba(98, 0, 234, 0.3)',
-                  cursor: 'pointer',
-                  transition: 'transform 0.1s ease-out, box-shadow 0.3s ease-out',
-                }}
-              >
-                <Box
-                  sx={{
-                    width: '100%',
-                    height: '100%',
+              {loading ? (
+                <Skeleton variant="circular" width={280} height={280} />
+              ) : (
+                <motion.div
+                  variants={avatarVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  whileHover="hover"
+                  viewport={{ once: false, amount: 0.3 }}
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
+                  style={{
+                    width: 280,
+                    height: 280,
                     borderRadius: '50%',
                     position: 'relative',
-                    '&::before': {
-                      content: '""',
-                      position: 'absolute',
-                      inset: -10,
-                      borderRadius: '50%',
-                      background: `linear-gradient(45deg, 
-                        ${theme.palette.primary.main}, 
-                        ${theme.palette.secondary.main})`,
-                      zIndex: -1,
-                      opacity: 0.7,
-                      filter: 'blur(20px)',
-                    },
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      inset: -5,
-                      borderRadius: '50%',
-                      border: `2px solid ${theme.palette.primary.main}`,
-                      zIndex: -1,
-                      opacity: 0.5,
-                    },
+                    transformStyle: 'preserve-3d',
+                    boxShadow: '0 10px 30px rgba(98, 0, 234, 0.3)',
+                    cursor: 'pointer',
+                    transition: 'transform 0.1s ease-out, box-shadow 0.3s ease-out',
                   }}
                 >
-                  <Avatar
-                    src="/images/Photo.jpeg"
-                    alt="Profile Image"
+                  <Box
                     sx={{
                       width: '100%',
                       height: '100%',
-                      border: `3px solid ${theme.palette.background.paper}`,
+                      borderRadius: '50%',
+                      position: 'relative',
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        inset: -10,
+                        borderRadius: '50%',
+                        background: `linear-gradient(45deg, 
+                          ${theme.palette.primary.main}, 
+                          ${theme.palette.secondary.main})`,
+                        zIndex: -1,
+                        opacity: 0.7,
+                        filter: 'blur(20px)',
+                      },
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        inset: -5,
+                        borderRadius: '50%',
+                        border: `2px solid ${theme.palette.primary.main}`,
+                        zIndex: -1,
+                        opacity: 0.5,
+                      },
                     }}
-                  />
-                </Box>
-              </motion.div>
+                  >
+                    <Avatar
+                      src={aboutData?.imageUrl || '/images/Photo.jpeg'}
+                      alt={aboutData?.name || 'Profile Image'}
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        border: `3px solid ${theme.palette.background.paper}`,
+                      }}
+                    />
+                  </Box>
+                </motion.div>
+              )}
             </motion.div>
           </Grid>
 
@@ -298,83 +367,105 @@ const About: React.FC = () => {
                     },
                   }}
                 >
-                  Who am I?
+                  {loading ? <Skeleton width={150} /> : 'Who am I?'}
                 </Typography>
               </motion.div>
 
-              <motion.div variants={textVariants}>
-                <Typography
-                  paragraph
-                  sx={{
-                    mb: 3,
-                    fontSize: '1.1rem',
-                    lineHeight: 1.8,
-                    color: "#fff",
-                  }}
-                >
-                  I&apos;m a <strong style={{ color: "red" }}>frontend developer</strong> with hands-on experience in building responsive and user-friendly web applications. I specialize in working with <strong style={{ color: "red" }}>React, Next.js, and modern UI libraries</strong> to create clean and engaging digital experiences.
-                </Typography>
-              </motion.div>
+              {loading ? (
+                // Loading skeletons
+                <>
+                  <motion.div variants={textVariants}>
+                    <Skeleton variant="text" width="100%" height={60} sx={{ mb: 3 }} />
+                  </motion.div>
+                  <motion.div variants={textVariants}>
+                    <Skeleton variant="text" width="100%" height={60} sx={{ mb: 3 }} />
+                  </motion.div>
+                  <motion.div variants={textVariants}>
+                    <Skeleton variant="text" width="100%" height={60} sx={{ mb: 4 }} />
+                  </motion.div>
+                </>
+              ) : (
+                // Actual content
+                <>
+                  <motion.div variants={textVariants}>
+                    <Typography
+                      paragraph
+                      sx={{
+                        mb: 3,
+                        fontSize: '1.1rem',
+                        lineHeight: 1.8,
+                        color: "#fff",
+                      }}
+                    >
+                      {renderHighlightedText(aboutData?.bio1 || '')}
+                    </Typography>
+                  </motion.div>
 
-              <motion.div variants={textVariants}>
-                <Typography
-                  paragraph
-                  sx={{
-                    mb: 3,
-                    fontSize: '1.1rem',
-                    lineHeight: 1.8,
-                    color: "#fff",
-                  }}
-                >
-                  My goal is to develop applications that are not only functional but also deliver an <strong style={{ color: "red" }}>intuitive and enjoyable user experience</strong>. I focus on writing clean, maintainable code and continuously improving my skills in performance optimization and scalability.
-                </Typography>
-              </motion.div>
+                  <motion.div variants={textVariants}>
+                    <Typography
+                      paragraph
+                      sx={{
+                        mb: 3,
+                        fontSize: '1.1rem',
+                        lineHeight: 1.8,
+                        color: "#fff",
+                      }}
+                    >
+                      {renderHighlightedText(aboutData?.bio2 || '')}
+                    </Typography>
+                  </motion.div>
 
-              <motion.div variants={textVariants}>
-                <Typography
-                  paragraph
-                  sx={{
-                    mb: 4,
-                    fontSize: '1.1rem',
-                    lineHeight: 1.8,
-                    color: "#fff",
-                  }}
-                >
-                  Beyond coding, I enjoy exploring new technologies, learning best practices in frontend development, and working on projects that challenge my creativity and problem-solving skills.
-                </Typography>
-              </motion.div>
+                  <motion.div variants={textVariants}>
+                    <Typography
+                      paragraph
+                      sx={{
+                        mb: 4,
+                        fontSize: '1.1rem',
+                        lineHeight: 1.8,
+                        color: "#fff",
+                      }}
+                    >
+                      {renderHighlightedText(aboutData?.bio3 || '')}
+                    </Typography>
+                  </motion.div>
+                </>
+              )}
 
-              <motion.div variants={textVariants}>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  component="a"
-                  href="/pdf/resume.pdf"
-                  download="Piyush_Resume.pdf"
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
-                    fontWeight: 600,
-                    borderWidth: 2,
-                    '&:hover': {
+              {!loading && aboutData?.resumeUrl && (
+                <motion.div variants={textVariants}>
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    component="a"
+                    href={aboutData.resumeUrl}
+                    download={`${aboutData.name || 'Resume'}.pdf`}
+                    target="_blank"
+                    rel="noreferrer"
+                    sx={{
+                      px: 4,
+                      py: 1.5,
+                      borderRadius: 2,
+                      fontWeight: 600,
                       borderWidth: 2,
-                      background: `linear-gradient(135deg, 
-                        ${theme.palette.primary.main}, 
-                        ${theme.palette.secondary.main})`,
-                      color: theme.palette.common.white,
-                      boxShadow: `0 5px 15px ${theme.palette.primary.main}40`,
-                    },
-                  }}
-                >
-                  Download Resume
-                </Button>
-              </motion.div>
+                      '&:hover': {
+                        borderWidth: 2,
+                        background: `linear-gradient(135deg, 
+                          ${theme.palette.primary.main}, 
+                          ${theme.palette.secondary.main})`,
+                        color: theme.palette.common.white,
+                        boxShadow: `0 5px 15px ${theme.palette.primary.main}40`,
+                      },
+                    }}
+                  >
+                    Download Resume
+                  </Button>
+                </motion.div>
+              )}
             </motion.div>
           </Grid>
         </Grid>
       </Container>
-      <Experience/>
+      <Experience />
     </Box>
   );
 };
