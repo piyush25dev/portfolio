@@ -432,34 +432,43 @@ const About: React.FC = () => {
               )}
 
               {!loading && aboutData?.resumeUrl && (
-                <motion.div variants={textVariants}>
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    component="a"
-                    href={aboutData.resumeUrl}
-                    download={`${aboutData.name || 'Resume'}.pdf`}
-                    target="_blank"
-                    rel="noreferrer"
-                    sx={{
-                      px: 4,
-                      py: 1.5,
-                      borderRadius: 2,
-                      fontWeight: 600,
-                      borderWidth: 2,
-                      '&:hover': {
-                        borderWidth: 2,
-                        background: `linear-gradient(135deg, 
-                          ${theme.palette.primary.main}, 
-                          ${theme.palette.secondary.main})`,
-                        color: theme.palette.common.white,
-                        boxShadow: `0 5px 15px ${theme.palette.primary.main}40`,
-                      },
-                    }}
+                // <motion.div variants={textVariants}>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 15 }}
                   >
-                    Download Resume
-                  </Button>
+                    <Button
+                      variant="outlined"
+                      size="large"
+                      component="a"
+                      href={aboutData.resumeUrl}
+                      download={`${aboutData.name || 'Resume'}.pdf`}
+                      target="_blank"
+                      rel="noreferrer"
+                      sx={{
+                        px: 4,
+                        py: 1.5,
+                        borderRadius: 2,
+                        fontWeight: 600,
+                        borderWidth: 2,
+                        borderColor: theme.palette.primary.main,
+                        color: theme.palette.primary.main,
+                        transition: 'all 0.3s ease-in-out',
+                        '&:hover': {
+                          borderColor: theme.palette.primary.main,
+                          background: `linear-gradient(135deg, 
+                            ${theme.palette.primary.main}15, 
+                            ${theme.palette.secondary.main}15)`,
+                          color: theme.palette.primary.main,
+                          boxShadow: `0 8px 20px ${theme.palette.primary.main}30`,
+                        },
+                      }}
+                    >
+                      Download Resume
+                    </Button>
                 </motion.div>
+                //  </motion.div>
               )}
             </motion.div>
           </Grid>
