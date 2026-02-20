@@ -336,7 +336,7 @@ const ProjectDetails: React.FC = () => {
 
             {/* ── Project Image — slides in from the LEFT ── */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <AnimatedBox variant="fadeLeft" duration={800} delay={100}>
+              <AnimatedBox variant="fadeUp" duration={800} delay={100}>
                 <ProjectImage
                   image={project.image}
                   title={project.title}
@@ -348,7 +348,7 @@ const ProjectDetails: React.FC = () => {
 
             {/* ── Project Header — slides in from the RIGHT ── */}
             <Grid size={{ xs: 12, md: 6 }}>
-              <AnimatedBox variant="fadeRight" duration={800} delay={200}>
+              <AnimatedBox variant="fadeDown" duration={800} delay={200}>
                 <ProjectHeader
                   title={project.title}
                   technologies={project.technologies}

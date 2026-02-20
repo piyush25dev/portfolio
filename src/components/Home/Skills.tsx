@@ -221,11 +221,13 @@ const Skills: React.FC = () => {
       if (snap.empty) {
         setSkills(FALLBACK_SKILLS);
       } else {
-        setSkills(snap.docs.map((doc) => ({
+        const fetchedSkills = snap.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name || '',
           image: doc.data().image || '',
-        })));
+        }));
+        // Sort by ID in ascending order (oldest first, newest last)
+        setSkills(fetchedSkills.sort((a, b) => a.id.localeCompare(b.id)));
       }
     } catch (err) {
       console.error('Error fetching skills:', err);
