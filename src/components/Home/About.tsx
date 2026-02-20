@@ -432,7 +432,7 @@ const About: React.FC = () => {
               )}
 
               {!loading && aboutData?.resumeUrl && (
-                <motion.div variants={textVariants}>
+                // <motion.div variants={textVariants}>
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -468,7 +468,7 @@ const About: React.FC = () => {
                       Download Resume
                     </Button>
                 </motion.div>
-                 </motion.div>
+                //  </motion.div>
               )}
             </motion.div>
           </Grid>
