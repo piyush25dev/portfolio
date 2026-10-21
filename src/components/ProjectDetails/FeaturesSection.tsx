@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, Paper, useTheme, useMediaQuery, Grid } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import { Icon } from '@iconify/react';
 
 interface FeaturesSectionProps {
   features: string[];
@@ -94,6 +94,7 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
             index={index}
             accentColor={accentColor}
             theme={theme}
+            isMobile={isMobile}
           />
         ))}
       </Grid>
@@ -123,9 +124,16 @@ interface FeatureCardProps {
   index: number;
   accentColor: string;
   theme: Theme;
+  isMobile: boolean;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, accentColor, theme }) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ 
+  feature, 
+  index, 
+  accentColor, 
+  theme,
+  isMobile 
+}) => {
   const { ref, inView } = useInView(0.1);
 
   // Stagger: each card delays by 80ms per index (capped at 400ms)
@@ -138,10 +146,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, accentColor, 
         style={{
           transition: [
             `opacity 600ms cubic-bezier(0.22,1,0.36,1) ${staggerDelay}ms`,
-            `transform 650ms cubic-bezier(0.34,1.56,0.64,1) ${staggerDelay}ms`,  // spring overshoot
+            `transform 650ms cubic-bezier(0.34,1.56,0.64,1) ${staggerDelay}ms`,
           ].join(', '),
           opacity: inView ? 1 : 0,
-          // pop up + tiny scale bounce
           transform: inView ? 'translateY(0px) scale(1)' : 'translateY(60px) scale(0.88)',
         }}
         sx={{ height: '100%' }}
@@ -223,14 +230,17 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ feature, index, accentColor, 
               zIndex: 1,
             }}
           >
-            <CheckCircleOutlineIcon
+            <Icon
               className="feature-icon"
-              sx={{
-                color: accentColor,
-                fontSize: { xs: '1.5rem', sm: '1.75rem' },
-                mt: 0.3,
+              icon="mdi:check-circle"
+              width={isMobile ? 24 : 28}
+              height={isMobile ? 24 : 28}
+              color={accentColor}
+              style={{
                 filter: `drop-shadow(0 0 8px ${accentColor})`,
                 transition: 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)',
+                marginTop: '4px',
+                flexShrink: 0,
               }}
             />
 

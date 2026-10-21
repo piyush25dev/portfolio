@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Button, Typography, Chip, useTheme, useMediaQuery } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import LaunchIcon from '@mui/icons-material/Launch';
+import { Icon } from '@iconify/react';
 import Link from 'next/link';
 
 interface ProjectHeaderProps {
@@ -105,7 +103,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         >
           <Link href="/" passHref>
             <Button
-              startIcon={<ArrowBackIcon />}
+              startIcon={<Icon icon="mdi:arrow-left" width={20} height={20} />}
               variant="outlined"
               size={isMobile ? 'small' : 'medium'}
               sx={{
@@ -235,7 +233,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             >
               <Button
                 variant="contained"
-                startIcon={<GitHubIcon />}
+                startIcon={<Icon icon="mdi:github" width={24} height={24} color="#000" />}
                 href={github}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -272,7 +270,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             >
               <Button
                 variant="outlined"
-                startIcon={<LaunchIcon />}
+                startIcon={<Icon icon="mdi:open-in-new" width={24} height={24} color={accentColor} />}
                 href={demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"

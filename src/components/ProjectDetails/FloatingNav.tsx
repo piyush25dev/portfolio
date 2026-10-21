@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, IconButton, Tooltip, useTheme } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import ShareIcon from '@mui/icons-material/Share';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { Icon } from '@iconify/react';
 
 const MotionBox = motion(Box);
 
@@ -90,7 +87,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ accentColor }) => {
                   },
                 }}
               >
-                <KeyboardArrowUpIcon />
+                <Icon icon="mdi:chevron-up" width={28} height={28} color="#000" />
               </IconButton>
             </motion.div>
           </Tooltip>
@@ -119,7 +116,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ accentColor }) => {
                   },
                 }}
               >
-                <ShareIcon />
+                <Icon icon="mdi:share-variant" width={28} height={28} color={accentColor} />
               </IconButton>
             </motion.div>
           </Tooltip>
@@ -152,7 +149,12 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ accentColor }) => {
                   },
                 }}
               >
-                {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                <Icon 
+                  icon={isBookmarked ? "mdi:bookmark" : "mdi:bookmark-outline"} 
+                  width={28} 
+                  height={28} 
+                  color={isBookmarked ? '#000' : accentColor} 
+                />
               </IconButton>
             </motion.div>
           </Tooltip>

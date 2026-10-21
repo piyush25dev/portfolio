@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { Box, Container, Typography, IconButton, Link } from '@mui/material';
-import { GitHub, LinkedIn, Email } from '@mui/icons-material';
+import { Icon } from '@iconify/react';
 
 const Footer: React.FC = () => {
   return (
@@ -23,25 +23,56 @@ const Footer: React.FC = () => {
             target="_blank" 
             rel="noopener"
             color="inherit"
-            sx={{ mx: 1 }}
+            sx={{ 
+              mx: 1,
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-3px)',
+              }
+            }}
           >
-            <GitHub fontSize="large" />
+            <Icon icon="mdi:github" width={32} height={32} />
           </IconButton>
           <IconButton 
             href="https://www.linkedin.com/in/piyush-kumar-dewangan-94124a256" 
             target="_blank" 
             rel="noopener"
             color="inherit"
-            sx={{ mx: 1 }}
+            sx={{ 
+              mx: 1,
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-3px)',
+              }
+            }}
           >
-            <LinkedIn fontSize="large" />
+            <Icon icon="mdi:linkedin" width={32} height={32} />
           </IconButton>
           <IconButton 
             href="mailto:piyushdewangan2501@gmail.com" 
             color="inherit"
-            sx={{ mx: 1 }}
+            sx={{ 
+              mx: 1,
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-3px)',
+              }
+            }}
           >
-            <Email fontSize="large" />
+            <Icon icon="mdi:email" width={32} height={32} />
+          </IconButton>
+          <IconButton 
+            href="https://www.instagram.com/i_am_bit2/" 
+            color="inherit"
+            sx={{ 
+              mx: 1,
+              transition: 'transform 0.3s ease',
+              '&:hover': {
+                transform: 'translateY(-3px)',
+              }
+            }}
+          >
+            <Icon icon="mdi:instagram" width={32} height={32} />
           </IconButton>
         </Box>
         <Typography variant="body1" align="center" sx={{fontWeight: '700'}}>
@@ -50,8 +81,7 @@ const Footer: React.FC = () => {
         <Typography variant="body2" align="center" sx={{ mt: 2 }}>
           Built with <Link href="https://nextjs.org/" color="inherit" target="_blank">Next.js</Link>,{' '}
           <Link href="https://mui.com/" color="inherit" target="_blank">Material UI</Link>,{' '}
-          <Link href="https://www.framer.com/motion/" color="inherit" target="_blank">Framer Motion</Link>,{' '}
-          <Link href="https://greensock.com/gsap/" color="inherit" target="_blank">GSAP</Link> and{' '}
+          <Link href="https://www.framer.com/motion/" color="inherit" target="_blank">Framer Motion</Link> and{' '}
           <Link href="https://firebase.google.com/" color="inherit" target="_blank">Firebase</Link>.
         </Typography>
       </Container>

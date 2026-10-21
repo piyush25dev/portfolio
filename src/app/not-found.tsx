@@ -2,11 +2,10 @@
 
 import { Box, Button, Typography, Container } from "@mui/material";
 import Link from "next/link";
-import { Home, Search } from "@mui/icons-material";
 import { keyframes } from "@mui/system";
+import { Icon } from '@iconify/react';
 
 // Animation keyframes
-
 const pulse = keyframes`
   0%, 100% {
     opacity: 1;
@@ -16,23 +15,33 @@ const pulse = keyframes`
   }
 `;
 
+const float = keyframes`
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+`;
+
 const NotFound: React.FC = () => {
   return (
     <Box
       sx={{
-        // minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
-        // background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
         overflow: "hidden",
         px: 2,
+        py: { xs: 8, md: 12 },
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
+        position: "relative",
       }}
     >
-      {/* Main content */}
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
         {/* 404 Number */}
         <Typography
           variant="h1"
@@ -50,14 +59,20 @@ const NotFound: React.FC = () => {
         </Typography>
 
         {/* Icon */}
-        <Search
+        <Box
           sx={{
-            fontSize: { xs: "3rem", sm: "4rem" },
-            color: "white",
             mb: 3,
-            opacity: 0.9,
+            animation: `${float} 3s ease-in-out infinite`,
           }}
-        />
+        >
+          <Icon
+            icon="mdi:magnify"
+            width={64}
+            height={64}
+            color="white"
+            style={{ opacity: 0.9 }}
+          />
+        </Box>
 
         {/* Main message */}
         <Typography
@@ -95,7 +110,7 @@ const NotFound: React.FC = () => {
             variant="contained"
             component={Link}
             href="/"
-            startIcon={<Home />}
+            startIcon={<Icon icon="mdi:home" width={24} height={24} />}
             sx={{
               px: 4,
               py: 1.5,
@@ -115,6 +130,32 @@ const NotFound: React.FC = () => {
             }}
           >
             Go Home
+          </Button>
+
+          <Button
+            variant="outlined"
+            component={Link}
+            href="/projects"
+            startIcon={<Icon icon="mdi:folder-open" width={24} height={24} />}
+            sx={{
+              px: 4,
+              py: 1.5,
+              fontSize: "1rem",
+              fontWeight: 600,
+              color: "white",
+              borderColor: "rgba(255,255,255,0.5)",
+              textTransform: "none",
+              borderRadius: "50px",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                borderColor: "white",
+                background: "rgba(255, 255, 255, 0.1)",
+                transform: "translateY(-3px)",
+                boxShadow: "0 8px 20px rgba(0, 0, 0, 0.2)",
+              },
+            }}
+          >
+            View Projects
           </Button>
         </Box>
 

@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, Paper, useTheme, useMediaQuery, Grid } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import { Icon } from '@iconify/react';
 
 interface ChallengesSectionProps {
   challenges: string[];
@@ -196,16 +195,14 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
           >
             {/* Challenge header */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-              <WarningAmberIcon
-                sx={{
-                  color: accentColor,
-                  fontSize: { xs: '1.75rem', sm: '2rem' },
+              <Icon
+                icon="wordpress:caution"
+                width={isMobile ? 28 : 32}
+                height={isMobile ? 28 : 32}
+                color={accentColor}
+                style={{
                   filter: `drop-shadow(0 0 10px ${accentColor})`,
                   animation: challengeAnim.inView ? 'iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards' : 'none',
-                  '@keyframes iconBounce': {
-                    '0%': { transform: 'scale(0.5) rotate(-15deg)', opacity: 0 },
-                    '100%': { transform: 'scale(1) rotate(0deg)', opacity: 1 },
-                  },
                 }}
               />
               <Typography
@@ -232,33 +229,18 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
 
             {/* Challenge content */}
             <Box
-              sx={{
-                pl: { xs: 2, sm: 3 },
-                borderLeft: `3px solid ${accentColor}60`,
-                ml: 1,
-                position: 'relative',
-              }}
+               sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}
             >
-              {[0, 1, 2].map((i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    position: 'absolute',
-                    left: '-6px',
-                    top: `${i * 33}%`,
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    background: accentColor,
-                    boxShadow: `0 0 8px ${accentColor}`,
-                    animation: `dotFadeIn 0.4s ease ${staggerDelay + 300 + i * 80}ms both`,
-                    '@keyframes dotFadeIn': {
-                      from: { opacity: 0, transform: 'scale(0)' },
-                      to: { opacity: 1, transform: 'scale(1)' },
-                    },
-                  }}
-                />
-              ))}
+              <Icon
+                icon="token:solve"
+                width={isMobile ? 28 : 32}
+                height={isMobile ? 28 : 32}
+                color={accentColor}
+                style={{
+                  filter: `drop-shadow(0 0 10px ${accentColor})`,
+                  animation: challengeAnim.inView ? 'iconBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards' : 'none',
+                }}
+              />
               <Typography
                 variant="body1"
                 sx={{ color: '#fff', lineHeight: 1.8, fontSize: { xs: '0.95rem', sm: '1.05rem' } }}
@@ -283,18 +265,16 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
           >
             {/* Solution header */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-              <LightbulbIcon
-                sx={{
-                  color: '#39fcfcff',
-                  fontSize: { xs: '1.75rem', sm: '2rem' },
+              <Icon
+                icon="mdi:lightbulb"
+                width={isMobile ? 28 : 32}
+                height={isMobile ? 28 : 32}
+                color="#39fcfcff"
+                style={{
                   filter: 'drop-shadow(0 0 10px #39fcfcff)',
                   animation: solutionAnim.inView
                     ? `glowPulse 2s ease-in-out ${staggerDelay + 400}ms infinite`
                     : 'none',
-                  '@keyframes glowPulse': {
-                    '0%, 100%': { filter: 'drop-shadow(0 0 6px #39fcfcff)' },
-                    '50%': { filter: 'drop-shadow(0 0 18px #39fcfcff)' },
-                  },
                 }}
               />
               <Typography
@@ -331,29 +311,20 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
 
             {/* Solution content */}
             <Box
-              sx={{
-                pl: { xs: 2, sm: 3 },
-                borderLeft: '3px solid #39fcfcff80',
-                ml: 1,
-                position: 'relative',
-              }}
+              sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}
             >
-              {[0, 1, 2].map((i) => (
-                <Box
-                  key={i}
-                  sx={{
-                    position: 'absolute',
-                    left: '-6px',
-                    top: `${i * 33}%`,
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    background: '#39fcfcff',
-                    boxShadow: '0 0 8px #39fcfcff',
-                    animation: `dotFadeIn 0.4s ease ${staggerDelay + 450 + i * 80}ms both`,
-                  }}
-                />
-              ))}
+              <Icon
+                icon="token:solve"
+                width={isMobile ? 28 : 32}
+                height={isMobile ? 28 : 32}
+                color="#39fcfcff"
+                style={{
+                  filter: 'drop-shadow(0 0 10px #39fcfcff)',
+                  animation: solutionAnim.inView
+                    ? `glowPulse 2s ease-in-out ${staggerDelay + 400}ms infinite`
+                    : 'none',
+                }}
+              />
               <Typography
                 variant="body1"
                 sx={{ color: '#fff', lineHeight: 1.8, fontSize: { xs: '0.95rem', sm: '1.05rem' } }}

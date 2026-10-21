@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { AppBar, Toolbar, IconButton, Typography, Box, Drawer, List, ListItem, ListItemButton, ListItemText, Container } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import { Icon } from '@iconify/react';
 import { Link as ScrollLink } from 'react-scroll';
 import { useState } from 'react';
 import { styled } from '@mui/material/styles';
@@ -150,7 +150,8 @@ const Navbar: React.FC = () => {
                 }}>
                 <Container maxWidth="lg" disableGutters>
                     <Toolbar>
-                        <Typography variant="h6" sx={{ flexGrow: 1, color: "#fff", }}>
+                        <Typography variant="h6" sx={{ flexGrow: 1, color: "#fff", display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Icon icon="mdi:code-tags" width={28} height={28} color="#00c8ff" />
                             My Portfolio
                         </Typography>
                         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
@@ -175,7 +176,7 @@ const Navbar: React.FC = () => {
                             onClick={handleDrawerToggle}
                             sx={{ display: { sm: 'none' } }}
                         >
-                            <MenuIcon />
+                            <Icon icon="mdi:menu" width={28} height={28} color="white" />
                         </IconButton>
                     </Toolbar>
                 </Container>
