@@ -1,4 +1,5 @@
 "use client"
+import AnalyticsProvider from "@/components/Home/AnalyticsProvider";
 import ParticleBackground from "@/components/ui/ParticleBackground";
 import { theme } from "@/styles/theme";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -41,7 +42,10 @@ export default function RootLayout({
         <ParticleBackground />
         <ThemeProvider theme={theme}>
           <CssBaseline />
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <SmoothScrollProvider>
+          <AnalyticsProvider />
+          {children}
+          </SmoothScrollProvider>
         </ThemeProvider>
       </body>
     </html>
