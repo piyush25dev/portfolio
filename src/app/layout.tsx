@@ -7,21 +7,29 @@ import Lenis from "lenis";
 import { useEffect } from "react";
 
 
-function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
+function SmoothScrollProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2, // adjust scroll speed
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 1.2,
+      easing: (t: number) =>
+        Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
+
+    let rafId = 0;
 
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      cancelAnimationFrame(rafId);
       lenis.destroy();
     };
   }, []);
@@ -36,16 +44,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        // style={{ position: "relative" }}
-      >
-        <ParticleBackground />
+      <body style={{ margin: 0 }}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-        <SmoothScrollProvider>
-          <AnalyticsProvider />
-          {children}
-          </SmoothScrollProvider>
+
+          {/* Fixed background layer */}
+          <ParticleBackground />
+
+          {/* Foreground content */}
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <SmoothScrollProvider>
+              <AnalyticsProvider />
+              {children}
+            </SmoothScrollProvider>
+          </div>
         </ThemeProvider>
       </body>
     </html>

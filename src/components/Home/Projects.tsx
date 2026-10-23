@@ -373,7 +373,7 @@ const Projects: React.FC = () => {
                   const slug = titleToSlug(project.title);
                   
                   return (
-                    <Grid size={{ xs: 12, sm: 6 }} key={project.id} sx={{ display: 'flex' }}>
+                    <Grid size={{ xs: 6, sm: 6 }} key={project.id} sx={{ display: 'flex' }}>
                       <AnimatedCard index={index}>
                         <ProjectCard
                           id={slug}
