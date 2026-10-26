@@ -77,7 +77,10 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
             height: '5px',
             background: `linear-gradient(90deg, ${accentColor}, #39fcfcff)`,
             borderRadius: '3px',
-            boxShadow: `0 0 15px ${accentColor}`,
+            boxShadow: `
+                        0 0 10px ${accentColor}95,
+                        0 0 18px ${accentColor}90
+                      `,
           }}
         />
       </Box>
@@ -157,7 +160,10 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
             overflow: 'hidden',
             transition: 'box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1)',
             '&:hover': {
-              boxShadow: `0 28px 60px ${accentColor}40`,
+              boxShadow: `
+                        0 0 10px ${accentColor}95,
+                        0 0 18px ${accentColor}90
+                      `,
               transform: 'translateY(-5px)',
               '& .bottom-bar': {
                 opacity: 1,

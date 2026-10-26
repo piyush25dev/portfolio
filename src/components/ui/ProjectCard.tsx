@@ -1,7 +1,11 @@
-import React, { useRef } from 'react';
-import { Box, Typography, Chip, Card, CardMedia, CardContent, useTheme, useMediaQuery } from '@mui/material';
+"use client";
+
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Typography, Chip, Card, CardContent, useTheme, useMediaQuery } from '@mui/material';
 import { SxProps, Theme } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { PacmanLoader } from "react-spinners";
+
 
 interface ProjectCardProps {
   id: string;
@@ -29,7 +33,23 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const theme = useTheme();
   const router = useRouter();
   const cardRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [imgLoaded, setImgLoaded] = useState(false);
+  const [imgError, setImgError] = useState(false);
+
+  // Restart the loader when the image changes. Also handle images that finished
+  // loading before React attached onLoad (cached image / server-rendered page).
+  useEffect(() => {
+    setImgError(false);
+    const el = imgRef.current;
+    if (el && el.complete && el.naturalWidth > 0) {
+      setImgLoaded(true);
+    } else {
+      setImgLoaded(false);
+    }
+  }, [image]);
 
   const visibleChipCount = isMobile ? 1 : 3;
 
@@ -132,18 +152,65 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         onMouseLeave={handleMouseLeave}
         onMouseEnter={handleMouseEnter}
       >
-        <CardMedia
-          component="img"
-          image={image}
-          alt={title}
+        {/* Image area: Pacman loader is shown until the image has loaded */}
+        <Box
           sx={{
+            position: 'relative',
             height: { xs: 150, sm: 200 },
             width: '100%',
-            objectFit: 'cover',
+            flexShrink: 0,
+            overflow: 'hidden',
             borderBottom: `4px solid ${accentColor || theme.palette.primary.main}`,
             transform: isMobile ? 'none' : 'translateZ(30px)',
+            backgroundColor: 'rgba(0, 0, 0, 0.25)',
           }}
-        />
+        >
+          {!imgLoaded && (
+            <Box
+              role="status"
+              aria-label="Loading image"
+              sx={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                // the Pacman dots trail to the right, so nudge it to look centered
+                pr: { xs: 2, sm: 3 },
+                zIndex: 1,
+              }}
+            >
+              {imgError ? (
+                <Typography variant="caption" sx={{ color: '#fff', opacity: 0.8 }}>
+                  Image unavailable
+                </Typography>
+              ) : (
+                <PacmanLoader color="#36d7b7" size={isMobile ? 14 : 22} />
+              )}
+            </Box>
+          )}
+
+          <Box
+            component="img"
+            ref={imgRef}
+            src={image}
+            alt={title}
+            loading="lazy"
+            onLoad={() => setImgLoaded(true)}
+            onError={() => setImgError(true)}
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              height: '100%',
+              width: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              opacity: imgLoaded ? 1 : 0,
+              transition: 'opacity 0.4s ease',
+            }}
+          />
+        </Box>
+
         <CardContent sx={{
           flexGrow: 1,
           transform: isMobile ? 'none' : 'translateZ(20px)',

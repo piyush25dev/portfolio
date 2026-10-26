@@ -172,7 +172,10 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
             cursor: 'default',
             '&:hover': {
               borderColor: accentColor,
-              boxShadow: `0 20px 50px ${accentColor}50`,
+              boxShadow: `
+                        0 0 10px ${accentColor}95,
+                        0 0 18px ${accentColor}90
+                      `,
               transform: 'translateY(-6px) scale(1.02)',
               '& .feature-icon': {
                 transform: 'rotate(360deg) scale(1.15)',
@@ -249,7 +252,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
               sx={{
                 lineHeight: 1.7,
                 color: '#fff',
-                fontSize: { xs: '0.95rem', sm: '1rem' },
+                fontSize: { xs: '0.95rem', sm: '0.9rem' },
                 fontWeight: 400,
               }}
             >

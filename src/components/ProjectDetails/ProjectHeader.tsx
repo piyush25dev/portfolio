@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Box, Button, Typography, Chip, useTheme, useMediaQuery } from '@mui/material';
 import { Icon } from '@iconify/react';
 import Link from 'next/link';
@@ -42,6 +43,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const router = useRouter();
 
   // Individual animation refs for each block
   const cardAnim      = useInView(0.08);
@@ -101,11 +103,11 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             transform: backAnim.inView ? 'translateX(0px)' : 'translateX(-36px)',
           }}
         >
-          <Link href="/" passHref>
             <Button
               startIcon={<Icon icon="mdi:arrow-left" width={20} height={20} />}
               variant="outlined"
               size={isMobile ? 'small' : 'medium'}
+              onClick={() => router.back()}
               sx={{
                 borderRadius: '12px',
                 borderColor: accentColor,
@@ -116,13 +118,16 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                   backgroundColor: `${accentColor}30`,
                   borderColor: accentColor,
                   transform: 'translateX(-5px)',
+                  boxShadow: `
+                        0 0 10px ${accentColor}95,
+                        0 0 18px ${accentColor}90
+                      `,
                 },
                 transition: 'all 0.3s cubic-bezier(0.4,0,0.2,1)',
               }}
             >
               Back to Projects
             </Button>
-          </Link>
         </Box>
 
         {/* ── Title — drops in from top with spring overshoot ── */}
@@ -135,14 +140,14 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           }}
         >
           <Typography
-            variant={isMobile ? 'h4' : 'h3'}
+            variant={isMobile ? 'h6' : 'h5'}
             sx={{
               fontWeight: 800,
               background: `linear-gradient(135deg, ${accentColor}, #39fcfcff)`,
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
-              fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
+              fontSize: { xs: '1rem', sm: '1.5rem', md: '1.8rem' },
               margin: 0,
             }}
           >
@@ -169,7 +174,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             >
               <Chip
                 label={tech}
-                size={isMobile ? 'small' : 'medium'}
+                size={isMobile ? 'small' : 'small'}
                 sx={{
                   background: `linear-gradient(135deg, ${accentColor}30, ${accentColor}50)`,
                   color: '#fff',
@@ -182,7 +187,10 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                   '&:hover': {
                     background: `linear-gradient(135deg, ${accentColor}50, ${accentColor}70)`,
                     transform: 'translateY(-3px) scale(1.06)',
-                    boxShadow: `0 8px 20px ${accentColor}40`,
+                     boxShadow: `
+                        0 0 10px ${accentColor}95,
+                        0 0 18px ${accentColor}90
+                      `,
                   },
                 }}
               />
@@ -204,8 +212,8 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
               variant="body1"
               sx={{
                 color: '#fff',
-                lineHeight: 1.8,
-                fontSize: { xs: '1rem', sm: '1.1rem' },
+                // lineHeight: 1.8,
+                fontSize: { xs: '1rem', sm: '0.95rem' },
                 textShadow: '0 2px 10px rgba(0,0,0,0.3)',
               }}
             >
@@ -238,7 +246,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 fullWidth={isMobile}
-                size={isMobile ? 'medium' : 'large'}
+                size={isMobile ? 'small' : 'medium'}
                 sx={{
                   background: `linear-gradient(135deg, ${accentColor}, ${accentColor}CC)`,
                   color: '#000',
@@ -250,7 +258,10 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                   transition: 'all 0.3s cubic-bezier(0.34,1.45,0.64,1)',
                   '&:hover': {
                     background: `linear-gradient(135deg, ${accentColor}DD, ${accentColor})`,
-                    boxShadow: `0 12px 30px ${accentColor}60`,
+                    boxShadow: `
+                        0 0 10px ${accentColor}95,
+                        0 0 18px ${accentColor}90
+                      `,
                     transform: 'translateY(-3px) scale(1.04)',
                   },
                 }}
@@ -275,7 +286,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 fullWidth={isMobile}
-                size={isMobile ? 'medium' : 'large'}
+                size={isMobile ? 'small' : 'medium'}
                 sx={{
                   borderColor: accentColor,
                   color: accentColor,
@@ -292,7 +303,10 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                     borderColor: accentColor,
                     borderWidth: 2,
                     transform: 'translateY(-3px) scale(1.04)',
-                    boxShadow: `0 10px 28px ${accentColor}40`,
+                    boxShadow: `
+                        0 0 10px ${accentColor}95,
+                        0 0 18px ${accentColor}90
+                      `,
                   },
                 }}
               >

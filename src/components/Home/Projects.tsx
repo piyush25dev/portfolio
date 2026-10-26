@@ -3,6 +3,7 @@ import { Box, Container, Typography, Grid, Pagination, useTheme, Alert } from '@
 import ProjectCard from '../ui/ProjectCard';
 import { db } from "@/utils/firebase";
 import { collection, getDocs } from 'firebase/firestore';
+import { ACCENT_COLORS, getProjectAccent, titleToSlug } from '@/utils/Projectaccent';
 
 // TypeScript Interface
 interface Project {
@@ -33,19 +34,6 @@ const FALLBACK_PROJECTS: Project[] = [
     link: '#',
   },
 ];
-
-const ACCENT_COLORS = ['#FF5252', '#FF9800', '#ffff11', '#FBC02D', '#CE93D8', '#ffffff'];
-const getAccentColor = (index: number) => ACCENT_COLORS[index % ACCENT_COLORS.length];
-
-// ── Utility function to convert title to URL-safe slug ──────────────────────
-const titleToSlug = (title: string): string => {
-  return title
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-')      // Replace spaces with hyphens
-    .replace(/-+/g, '-')       // Replace multiple hyphens with single
-    .trim();
-};
 
 // ── Repeatable in-view hook ───────────────────────────────────────────────
 function useInView(threshold = 0.12) {
@@ -87,7 +75,8 @@ function useInView(threshold = 0.12) {
 
 // ── Animated Project Card Skeleton ───────────────────────────────────────────
 const ProjectCardSkeleton: React.FC<{ index: number }> = ({ index }) => {
-  const accent = getAccentColor(index);
+  // skeletons have no project yet, so they just cycle through the shared palette
+  const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
 
   return (
     <Box
@@ -371,7 +360,7 @@ const Projects: React.FC = () => {
               {currentProjects.length > 0 ? (
                 currentProjects.map((project, index) => {
                   const slug = titleToSlug(project.title);
-                  
+
                   return (
                     <Grid size={{ xs: 6, sm: 6 }} key={project.id} sx={{ display: 'flex' }}>
                       <AnimatedCard index={index}>
@@ -382,7 +371,8 @@ const Projects: React.FC = () => {
                           technologies={project.technologies}
                           image={project.image}
                           link={`/projects/${slug}`}
-                          accentColor={getAccentColor(startIndex + index)}
+                          // same helper as the details page, so both always use the same colour
+                          accentColor={getProjectAccent(project.title)}
                           externalLink={false}
                         />
                       </AnimatedCard>

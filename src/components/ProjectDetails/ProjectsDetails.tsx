@@ -14,6 +14,7 @@ import { projects } from '@/data/projects';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { db } from "@/utils/firebase";
+import { getProjectAccent, titleToSlug } from '@/utils/Projectaccent';
 
 // Import separated components
 import { ProjectHeader } from './ProjectHeader';
@@ -54,16 +55,6 @@ const FloatingParticles = dynamic(
   () => import('./FloatingParticles'),
   { ssr: false }
 );
-
-// ── Utility function to convert title to URL-safe slug ──────────────────────
-const titleToSlug = (title: string): string => {
-  return title
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-')      // Replace spaces with hyphens
-    .replace(/-+/g, '-')       // Replace multiple hyphens with single
-    .trim();
-};
 
 // ─── Scroll Animation Hook ──────────────────────────────────────────────────
 type AnimationVariant =
@@ -228,7 +219,7 @@ const ProjectDetails: React.FC = () => {
 
   // Get the slug from params and find matching project
   const slug = params?.id as string;
-  
+
   // Search through both local projects and fetched projects by comparing slugs
   let project = projects.find(p => titleToSlug(p.title) === slug);
   if (!project) {
@@ -298,18 +289,8 @@ const ProjectDetails: React.FC = () => {
     );
   }
 
-  const getAccentColor = () => {
-    const colors = [
-      '#FFCDD2', '#FFCC80', '#FFF59D', '#A5D6A7',
-      '#90CAF9', '#CE93D8', '#80DEEA', '#BCAAA4',
-    ];
-    const hash = project.title
-      .split('')
-      .reduce((acc, char) => char.charCodeAt(0) + acc, 0);
-    return colors[hash % colors.length];
-  };
-
-  const accentColor = getAccentColor();
+  // Same helper the projects list uses, so the card and this page always share one colour
+  const accentColor = getProjectAccent(project.title);
 
   return (
     <>
@@ -320,7 +301,7 @@ const ProjectDetails: React.FC = () => {
       </Head>
 
       {/* Animated background gradient */}
-      <Box
+      {/* <Box
         sx={{
           position: 'fixed',
           top: 0,
@@ -335,10 +316,10 @@ const ProjectDetails: React.FC = () => {
                radial-gradient(circle at 80% 80%, #39fcfcff10, transparent 50%)`,
           opacity: 0.6,
         }}
-      />
+      /> */}
 
       {/* Floating particles background */}
-      <Box
+      {/* <Box
         sx={{
           position: 'fixed',
           top: 0,
@@ -354,7 +335,7 @@ const ProjectDetails: React.FC = () => {
           colorA={accentColor}
           colorB="#39fcfcff"
         />
-      </Box>
+      </Box> */}
 
       <Box
         sx={{
