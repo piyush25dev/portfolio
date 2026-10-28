@@ -10,7 +10,6 @@ import {
   useMediaQuery,
   CircularProgress,
 } from '@mui/material';
-import { projects } from '@/data/projects';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { db } from "@/utils/firebase";
@@ -216,15 +215,11 @@ const ProjectDetails: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [fetchedProjects, setFetchedProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Get the slug from params and find matching project
+  // Get the slug from params and find the matching project
   const slug = params?.id as string;
-
-  // Search through both local projects and fetched projects by comparing slugs
-  let project = projects.find(p => titleToSlug(p.title) === slug);
-  if (!project) {
-    project = fetchedProjects.find(p => titleToSlug(p.title) === slug);
-  }
+  const project = fetchedProjects.find(p => titleToSlug(p.title) === slug);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -256,6 +251,8 @@ const ProjectDetails: React.FC = () => {
     } catch (err) {
       console.error('Error fetching projects:', err);
       setFetchedProjects(FALLBACK_PROJECTS);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -263,7 +260,8 @@ const ProjectDetails: React.FC = () => {
     fetchProjects();
   }, [fetchProjects]);
 
-  if (!project) {
+  // Still fetching from Firestore
+  if (isLoading) {
     return (
       <Box sx={{
         height: '100vh',
@@ -284,6 +282,31 @@ const ProjectDetails: React.FC = () => {
           fontWeight: 500
         }}>
           Loading project...
+        </Typography>
+      </Box>
+    );
+  }
+
+  // Fetch finished but no project matches the slug
+  if (!project) {
+    return (
+      <Box sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 2,
+        backgroundColor: 'transparent'
+      }}>
+        <Typography variant="h4" sx={{
+          color: theme.palette.text.primary,
+          fontWeight: 500
+        }}>
+          Project not found
+        </Typography>
+        <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
+          The project you're looking for doesn't exist.
         </Typography>
       </Box>
     );
@@ -348,7 +371,7 @@ const ProjectDetails: React.FC = () => {
         <Container maxWidth="lg">
           <Grid container spacing={isMobile ? 3 : 5}>
 
-            {/* ── Project Image — slides in from the LEFT ── */}
+            {/* ── Project Image ── */}
             <Grid size={{ xs: 12, md: 6 }}>
               <AnimatedBox variant="fadeUp" duration={800} delay={100}>
                 <ProjectImage
@@ -360,7 +383,7 @@ const ProjectDetails: React.FC = () => {
               </AnimatedBox>
             </Grid>
 
-            {/* ── Project Header — slides in from the RIGHT ── */}
+            {/* ── Project Header ── */}
             <Grid size={{ xs: 12, md: 6 }}>
               <AnimatedBox variant="fadeDown" duration={800} delay={200}>
                 <ProjectHeader
