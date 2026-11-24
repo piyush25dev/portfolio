@@ -1,9 +1,21 @@
 import { createTheme } from '@mui/material/styles';
-import { Orbitron } from 'next/font/google';
+import { Oxanium, Audiowide, Exo_2 } from 'next/font/google';
 
-export const orbitron = Orbitron({
-  weight: ['400', '500', '600', '700', '800', '900'],
+export const oxanium = Oxanium({
   subsets: ['latin'],
+  display: 'swap',
+});
+
+// Single-weight fonts require an explicit weight
+export const audiowide = Audiowide({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+export const exo2 = Exo_2({
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const theme = createTheme({
@@ -20,7 +32,7 @@ export const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: orbitron.style.fontFamily,
+    fontFamily: exo2.style.fontFamily,
     h1: {
       fontSize: '2rem',
       fontWeight: 700,

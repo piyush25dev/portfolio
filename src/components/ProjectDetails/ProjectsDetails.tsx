@@ -342,7 +342,7 @@ const ProjectDetails: React.FC = () => {
       /> */}
 
       {/* Floating particles background */}
-      {/* <Box
+      <Box
         sx={{
           position: 'fixed',
           top: 0,
@@ -358,7 +358,7 @@ const ProjectDetails: React.FC = () => {
           colorA={accentColor}
           colorB="#39fcfcff"
         />
-      </Box> */}
+      </Box>
 
       <Box
         sx={{
