@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Box, Container, Typography, Grid, Pagination, useTheme, Alert } from '@mui/material';
 import ProjectCard from '../ui/ProjectCard';
@@ -255,6 +257,7 @@ const AnimatedCard: React.FC<{ index: number; children: React.ReactNode }> = ({ 
           ? 'translateY(0px) translateY(0px) scale(1)'
           : `translateY(${fromX}px) translateY(40px) scale(0.93)`,
         height: '100%',
+         width: '100%',
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -287,7 +290,7 @@ const AnimatedPagination: React.FC<{ children: React.ReactNode }> = ({ children 
 const Projects: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(1);
-  const projectsPerPage = 4;
+  const projectsPerPage = 6;
   const theme = useTheme();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -362,7 +365,7 @@ const Projects: React.FC = () => {
                   const slug = titleToSlug(project.title);
 
                   return (
-                    <Grid size={{ xs: 6, sm: 6 }} key={project.id} sx={{ display: 'flex' }}>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={project.id} sx={{ display: 'flex', minWidth: 0 }}>
                       <AnimatedCard index={index}>
                         <ProjectCard
                           id={slug}

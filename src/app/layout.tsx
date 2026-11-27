@@ -13,6 +13,11 @@ function SmoothScrollProvider({
   children: React.ReactNode;
 }) {
   useEffect(() => {
+    if (
+      window.matchMedia("(max-width: 767px)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) =>

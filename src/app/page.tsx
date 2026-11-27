@@ -1,31 +1,36 @@
-"use client"
 import React from 'react';
+import dynamic from 'next/dynamic';
 import Hero from '../components/Home/Hero';
-import About from '../components/Home/About';
-import Skills from '../components/Home/Skills';
-import Projects from '../components/Home/Projects';
-import Contact from '../components/Home/Contact';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { theme } from '@/styles/theme';
 import Footer from '@/components/layouts/Footer';
 import Navbar from '@/components/layouts/Navbar';
 
-const Home: React.FC = () => {
+const SectionFallback = () => <div style={{ minHeight: 240 }} aria-hidden="true" />;
 
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      
-      
-        <Navbar />
-        <div id="home"><Hero /></div>
-        <div id="about"><About /></div>
-        <div id="skills"><Skills /></div>
-        <div id="projects"><Projects /></div>
-        <div id="contact"><Contact /></div>
-        <Footer />
-    </ThemeProvider>
-  );
-};
+const About = dynamic(() => import('../components/Home/About'), { loading: SectionFallback });
+const Skills = dynamic(() => import('../components/Home/Skills'), { loading: SectionFallback });
+const Projects = dynamic(() => import('../components/Home/Projects'), { loading: SectionFallback });
+const Contact = dynamic(() => import('../components/Home/Contact'), { loading: SectionFallback });
+
+const Home: React.FC = () => (
+  <>
+    <Navbar />
+    <main>
+      <section id="home">
+        <Hero />
+      </section>
+      <section id="about">
+        <About />
+      </section>
+      <section id="skills">
+        <Skills />
+      </section>
+      <Projects />
+      <section id="contact">
+        <Contact />
+      </section>
+    </main>
+    <Footer />
+  </>
+);
 
 export default Home;

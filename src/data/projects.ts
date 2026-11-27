@@ -49,7 +49,7 @@ export const projects: Project[] = [
     description:
       "A responsive portfolio website with animations and interactive elements.",
     technologies: ["Next.js", "Material UI", "TypeScript", "Framer Motion"],
-    image: "/images/portfolio.png",
+    image: "/images/portfolio.webp",
     link: "#",
     detailedDescription:
       "A modern portfolio website built using Next.js to showcase my projects and skills. The site features smooth animations, interactive elements, and a responsive design that works across all devices.",
@@ -85,7 +85,7 @@ export const projects: Project[] = [
       "JavaScript",
       "EmailJS",
     ],
-    image: "/images/hems.png", // Replace with actual image path
+    image: "/images/hems.webp", // Replace with actual image path
     link: "#",
     detailedDescription:
       "A modern website for Hems Corporation featuring smooth animations, a project portfolio gallery, and seamless contact form integration with EmailJS for instant client inquiries.",
@@ -124,7 +124,7 @@ export const projects: Project[] = [
       "Zod",
       "Tailwind CSS",
     ],
-    image: "/images/realtime-chat.png",
+    image: "/images/realtime-chat.webp",
     link: "#",
     detailedDescription:
       "Realtime Self-Destruct Chat is a privacy-focused web application that enables users to create temporary chat rooms with automatic expiration. Each room is destroyed after 10 minutes, deleting all associated messages and metadata from the database. The application leverages Redis TTL for automatic cleanup, real-time messaging with Upstash Realtime, and a modern responsive UI built with Next.js and Tailwind CSS. The system ensures minimal data persistence while maintaining seamless real-time communication.",
@@ -159,7 +159,7 @@ export const projects: Project[] = [
     description:
       "Real-time weather information with interactive maps and forecasts.",
     technologies: ["React", "JavaScript", "OpenWeather API"],
-    image: "/images/weather.png",
+    image: "/images/weather.webp",
     link: "#",
     detailedDescription:
       "A weather dashboard that provides real-time weather information, forecasts, and interactive maps. The application uses the OpenWeather API to fetch accurate weather data and presents it in an intuitive interface.",
@@ -190,7 +190,7 @@ export const projects: Project[] = [
     description:
       "A solar panel information and service website with contact support.",
     technologies: ["React", "JavaScript", "Material UI", "Framer Motion"],
-    image: "/images/oss.png",
+    image: "/images/oss.webp",
     link: "#",
     detailedDescription:
       "A static website showcasing solar panel products and services. The platform provides detailed information about solar panels, their benefits, and allows users to directly contact the seller via email for queries.",
@@ -226,7 +226,7 @@ export const projects: Project[] = [
       "JavaScript",
       "EmailJS",
     ],
-    image: "/images/ukl.png",
+    image: "/images/ukl.webp",
     link: "#",
     detailedDescription:
       "Uniklinger’s website highlights their expertise in fluid control, sealing, steam engineering, and safety valves. Featuring smooth animations, an extensive product catalog, and integrated contact forms for inquiries, it emphasizes global service, advanced solutions, and sustainable engineering practices.",
@@ -262,7 +262,7 @@ export const projects: Project[] = [
       "JavaScript",
       "EmailJS",
     ],
-    image: "/images/travel.png",
+    image: "/images/travel.webp",
     link: "#",
     detailedDescription:
       "Travel’s website offers users a seamless experience to explore and book hotels, flights, and destination packages. With engaging animations, intuitive navigation, and quick inquiry forms, it aims to inspire adventure and simplify the booking process for travelers worldwide.",
@@ -298,7 +298,7 @@ export const projects: Project[] = [
       "Tailwind CSS",
       "Framer Motion",
     ],
-    image: "/images/texkart.png",
+    image: "/images/texkart.webp",
     link: "#",
     detailedDescription:
       "Texkart provides a streamlined experience for textile shopping, allowing users to browse products, manage orders, and track purchase quantities through an interactive dashboard. The platform combines modern design elements, responsive layouts, and engaging animations to enhance the user’s shopping journey.",
@@ -370,7 +370,7 @@ export const projects: Project[] = [
     description:
       "A web-based tool that allows users to reduce video file sizes efficiently through an intuitive and responsive interface, making video sharing and storage easier.",
     technologies: ["Next.js", "JavaScript", "Material-UI", "Iconify"],
-    image: "/images/video-compress.png",
+    image: "/images/video-compress.webp",
     link: "#",
     detailedDescription:
       "The Video Size Reducer is a modern web application designed to help users compress videos quickly and effortlessly. Users can upload videos, choose compression levels, and download optimized files through a clean and responsive UI. The project focuses on usability, performance, and reusable component architecture.",

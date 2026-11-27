@@ -124,6 +124,13 @@ const ParticleBackground: React.FC = () => {
     let cleanup: (() => void) | undefined;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobileDevice = window.matchMedia("(max-width: 767px)").matches;
+    // Mobile gets the CSS gradient fallback; a continuously animated WebGL scene
+    // competes with the page's main-thread work and severely hurts Lighthouse.
+    if (isMobileDevice || reduceMotion) {
+      canvas.style.opacity = "1";
+      return;
+    }
 
     const start = async () => {
       let THREE: typeof T;
@@ -149,7 +156,7 @@ const ParticleBackground: React.FC = () => {
       const disposables: Array<{ dispose: () => void }> = [];
 
       /* ---------------- star field ---------------- */
-      const STAR_COUNT = isMobile ? 900 : 2000;
+      const STAR_COUNT = 1100;
       const sPos = new Float32Array(STAR_COUNT * 3);
       const sCol = new Float32Array(STAR_COUNT * 3);
       const sSeed = new Float32Array(STAR_COUNT);
@@ -188,8 +195,8 @@ const ParticleBackground: React.FC = () => {
       disposables.push(starGeo, starMat);
 
       /* ---------------- node network ---------------- */
-      const NODE_COUNT = isMobile ? 34 : 70;
-      const LINK_DIST = isMobile ? 11 : 13;
+      const NODE_COUNT = 42;
+      const LINK_DIST = 11;
       const CURSOR_LINK_DIST = 16;
       const BOUNDS = { x: 42, y: 24, zMin: -18, zMax: 2 };
 
@@ -436,10 +443,20 @@ const ParticleBackground: React.FC = () => {
       let rafActive = true;
       const loop = (now: number) => {
         if (!rafActive) return;
+        if (document.hidden) {
+          last = now;
+          raf = requestAnimationFrame(loop);
+          return;
+        }
+        // 30fps is enough for a decorative background and halves GPU work.
+        const elapsed = now - last;
+        if (elapsed < 1000 / 30) {
+          raf = requestAnimationFrame(loop);
+          return;
+        }
         raf = requestAnimationFrame(loop);
-        const dt = Math.min((now - last) / 1000, 0.05);
+        const dt = Math.min(elapsed / 1000, 0.05);
         last = now;
-        if (document.hidden) return;
         frame(dt);
       };
 
@@ -482,7 +499,7 @@ const ParticleBackground: React.FC = () => {
         top: 0,
         left: 0,
         width: "100%",
-        height: "100vh",
+        height: "100svh",
         zIndex: 0,
         pointerEvents: "none",
         display: "block",

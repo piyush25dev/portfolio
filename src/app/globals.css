@@ -24,3 +24,11 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* Keep the hero's real text visible on mobile; the Three.js scatter is desktop-only. */
+@media (max-width: 767px) {
+  .scatter-pending [data-scatter] {
+    opacity: 1 !important;
+  }
+}

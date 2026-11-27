@@ -350,7 +350,8 @@ const Skills: React.FC = () => {
                               alt={skill.name}
                               sx={{
                                 width: isMobile ? 60 : 80, height: isMobile ? 60 : 80,
-                                objectFit: 'contain', transition: 'all 0.2s ease'
+                                objectFit: 'contain', transition: 'all 0.2s ease',
+                                borderRadius: 2,
                               }}
                               onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />

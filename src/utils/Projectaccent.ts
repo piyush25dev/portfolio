@@ -1,5 +1,11 @@
-export const ACCENT_COLORS = ['#FF5252', '#FF9800', '#ffff11', '#FBC02D', '#CE93D8', '#ffffff'];
-
+export const ACCENT_COLORS = [
+  '#D8C5FF', // Light Lavender
+  '#BDE7FF', // Ice Blue
+  '#C5F5DC', // Soft Mint
+  '#FFD1E3', // Pastel Pink
+  '#FFE5B4', // Peach Cream
+  '#D5DCFF', // Light Periwinkle
+];
 export const titleToSlug = (title: string): string =>
   title
     .toLowerCase()

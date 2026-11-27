@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { Box, Container, Typography, TextField, Alert, CircularProgress } from '@mui/material';
 import { motion, useInView } from 'framer-motion';

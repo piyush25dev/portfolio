@@ -100,7 +100,10 @@ const ScatterText3D: React.FC<ScatterText3DProps> = ({ containerRef, play, onCom
 
     const finishWithoutAnimation = () => onCompleteRef.current();
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      window.matchMedia('(max-width: 767px)').matches
+    ) {
       finishWithoutAnimation();
       return;
     }
